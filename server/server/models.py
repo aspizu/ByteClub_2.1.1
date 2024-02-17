@@ -16,7 +16,7 @@ class User(Base):
     bio = Column(String, nullable=True)
     profile_pic = Column(String, nullable=True)
     skills = Column(String, nullable=True)
-    expirience = Column(String, nullable=True)
+    experience = Column(String, nullable=True)
     created_at = Column(TIMESTAMP(timezone=True), server_default=text("now()"), nullable=False)
 
 
@@ -82,4 +82,3 @@ class Blog(Base):
     created_at = Column(TIMESTAMP(timezone=True), server_default=text("now()"), nullable=False)
 
     author = relationship("Users")
-    
