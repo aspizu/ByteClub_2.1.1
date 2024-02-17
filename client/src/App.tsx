@@ -1,6 +1,7 @@
 import * as api from "~/api"
 import catImage from "~/assets/cat.png"
 import {useMethod} from "~/reproca"
+import "./index.css"
 
 export function App() {
     const [languages] = useMethod(api.get_languages, [])
