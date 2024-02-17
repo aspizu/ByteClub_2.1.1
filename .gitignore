@@ -1,5 +1,7 @@
 **/node_modules/
 **/__pycache__/
+/env/
+/.idea
 **/.ruff_cache/
 client/dist/
 server/uploaded
