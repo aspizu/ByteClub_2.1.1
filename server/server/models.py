@@ -38,7 +38,7 @@ class Founder(Base):
     startup_id = Column(Integer, ForeignKey("Startup.id", ondelete="CASCADE"), nullable=False, primary_key=True)
     user_id = Column(Integer, ForeignKey("User.id", ondelete="CASCADE"), nullable=False, primary_key=True)
 
-    post = relationship("Startups")
+    startup = relationship("Startups")
     user = relationship("Users")
 
 
@@ -58,8 +58,8 @@ class Follow(Base):
     following_user_id = Column(Integer, ForeignKey("User.id", ondelete="CASCADE"), nullable=False, primary_key=True)
     follower_user_id = Column(Integer, ForeignKey("User.id", ondelete="CASCADE"), nullable=False, primary_key=True)
 
-    following_user_id = relationship("Users")
-    follower_user_id = relationship("Startups")
+    following = relationship("Users")
+    follower = relationship("Startups")
 
 
 class Mentorship(Base):
@@ -68,8 +68,8 @@ class Mentorship(Base):
     mentor_id = Column(Integer, ForeignKey("Mentor.user_id", ondelete="CASCADE"), nullable=False)
     mentee_id = Column(Integer, ForeignKey("User.id", ondelete="CASCADE"), nullable=False)
 
-    mentor_id = relationship("Mentor")
-    mentee_id = relationship("Users")
+    mentor = relationship("Mentor")
+    mentee = relationship("Users")
 
 
 class Blog(Base):
