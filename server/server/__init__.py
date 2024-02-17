@@ -1,6 +1,7 @@
 from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING
+import msgspec
 from reproca import Reproca
 from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
@@ -11,42 +12,35 @@ from starlette.staticfiles import StaticFiles
 if TYPE_CHECKING:
     from starlette.requests import Request
 
-reproca = Reproca()
 
-languages = [
-        "Python",
-        "Rust",
-        "Typescript",
-        "Java",
-        "Javascript",
-        "Ruby",
-        "Go",
-        "C",
-        "C++",
-    ]
-@reproca.method
-async def get_languages() -> list[str]:
-    return languages
-@reproca.method
-async def add_language(language: str) -> str:
-    languages.append(language)
-    return language
+class User(msgspec.Struct):
+    """Reproca session store."""
+
+    id: int
+    username: str
+    created_at: int
+
+
+# --> int
+# Type of unique identifier for any user. This is the ID column of the User table in the
+# database.
+# --> User
+# Type used to store user sessions, any information can be stored together with the user
+# sessions.
+reproca: Reproca[int, User] = Reproca()
 
 # This will generate API bindings for Typescript inside the client src directory.
 with Path("../client/src/api.ts").open("w") as file:
     reproca.typescript(file)
 
 
-# This is not a reproca method, it is an endpoint which returns the index.html page
-# for any URL.
 async def spa_route(request: Request) -> FileResponse:
+    """Endpoint which returns the `index.html` page for any URL."""
     return FileResponse("../client/dist/index.html")
 
 
-# If debug is True, then visiting /docs on the server will respond with a documentation
-# page.
 app = reproca.build(
-    debug=True,
+    debug=True,  # /docs is broken, not sure what else debug does.
     routes=[
         Mount(
             "/assets", app=StaticFiles(directory="../client/dist/assets"), name="assets"
@@ -64,4 +58,3 @@ app = reproca.build(
         )
     ],
 )
-

@@ -1,8 +1,20 @@
+<<<<<<< HEAD
+=======
+from __future__ import annotations
+>>>>>>> dbe79e7 (we have a problem)
 from sqlalchemy import TIMESTAMP, Boolean, Column, ForeignKey, Integer, String, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
 Base = declarative_base()
+
+
+class File(Base):
+    __tablename__ = "Files"
+
+    id = Column(Integer, primary_key=True, index=True)
+    path = Column(String, nullable=False)
+    is_deleted = Column(Boolean, nullable=False)
 
 
 class User(Base):
@@ -13,12 +25,17 @@ class User(Base):
     password = Column(String, nullable=False)
     link = Column(String, nullable=True)
     bio = Column(String, nullable=True)
-    profile_pic = Column(String, nullable=True)
+    profile_pic_id = Column(String, ForeignKey("File.id"), nullable=True)
     skills = Column(String, nullable=True)
     experience = Column(String, nullable=True)
     created_at = Column(
         TIMESTAMP(timezone=True), server_default=text("now()"), nullable=False
     )
+<<<<<<< HEAD
+=======
+
+    profile_pic = relationship("Files")
+>>>>>>> dbe79e7 (we have a problem)
 
 
 class Startup(Base):
@@ -65,7 +82,7 @@ class Mentor(Base):
         primary_key=True,
     )
     expertise = Column(String, nullable=True)
-    availablity = Column(Boolean, nullable=False)
+    availability = Column(Boolean, nullable=False)
 
     user = relationship("Users")
 
