@@ -3,7 +3,7 @@
 ```sh
 cd ~/Downloads/Some/Where
 git clone https://github.com/aspizu/reproca
-cd reproca
+cd reproca/reproca_server
 pip install .
 ```
 
