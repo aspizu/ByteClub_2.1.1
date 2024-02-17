@@ -23,6 +23,7 @@ reportWildcardImportFromLibrary = false
 [tool.ruff]
 select = ["ALL"]
 ignore = [
+    "TD003",
     "ANN101",
     "F841",
     "ANN001",
