@@ -1,3 +1,3 @@
 import reproca from "./reproca"
 
-export default reproca("http://localhost:8000")
+export default reproca(import.meta.env.DEV ? "http://localhost:8000" : "")

@@ -20,10 +20,7 @@ reportMissingTypeStubs = false
 reportWildcardImportFromLibrary = false
 
 
-
-
 [tool.ruff]
-line-length = 88
 select = ["ALL"]
 ignore = [
     "ANN101",
@@ -43,7 +40,6 @@ ignore = [
     "PLW2901",
     "ISC001",
     "S307",
-    "PGH001",
     "PGH003",
     "SLF001",
     "E741",
