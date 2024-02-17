@@ -1,7 +1,5 @@
-<<<<<<< HEAD
-=======
 from __future__ import annotations
->>>>>>> dbe79e7 (we have a problem)
+
 from sqlalchemy import TIMESTAMP, Boolean, Column, ForeignKey, Integer, String, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
@@ -31,11 +29,8 @@ class User(Base):
     created_at = Column(
         TIMESTAMP(timezone=True), server_default=text("now()"), nullable=False
     )
-<<<<<<< HEAD
-=======
 
     profile_pic = relationship("Files")
->>>>>>> dbe79e7 (we have a problem)
 
 
 class Startup(Base):
