@@ -14,6 +14,10 @@ MAX_UPLOAD_SIZE = 1_049_000  # 10 MiB
 UPLOADED = Path("./uploaded")
 
 
+# TODO: Only allow authenticated users to upload files.
+# TODO: Delete files if they are not used, reference counting ???
+# TODO: Verify that files are valid images.
+# TODO: Let users list files that they have uploaded. Use Database ???
 async def upload_file(request: Request) -> Response:
     """Endpoint to upload one file."""
     form = await request.form()
