@@ -32,5 +32,7 @@
     "ruff.organizeImports": false,
     "files.eol": "\n",
     "files.insertFinalNewline": true,
-    "prettier.endOfLine": "lf"
+    "prettier.endOfLine": "lf",
+    "python.analysis.typeCheckingMode": "strict",
+    "python.analysis.autoImportCompletions": true
 }
