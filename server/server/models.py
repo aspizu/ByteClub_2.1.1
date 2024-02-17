@@ -1,7 +1,6 @@
+from sqlalchemy import TIMESTAMP, Boolean, Column, ForeignKey, Integer, String, text
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Boolean, Column, Integer, String, TIMESTAMP, text, ForeignKey
 from sqlalchemy.orm import relationship
-
 
 Base = declarative_base()
 
@@ -17,7 +16,9 @@ class User(Base):
     profile_pic = Column(String, nullable=True)
     skills = Column(String, nullable=True)
     experience = Column(String, nullable=True)
-    created_at = Column(TIMESTAMP(timezone=True), server_default=text("now()"), nullable=False)
+    created_at = Column(
+        TIMESTAMP(timezone=True), server_default=text("now()"), nullable=False
+    )
 
 
 class Startup(Base):
@@ -29,14 +30,26 @@ class Startup(Base):
     offering = Column(String, nullable=True)
     description = Column(String, nullable=True)
     logo = Column(String, nullable=True)
-    created_at = Column(TIMESTAMP(timezone=True), server_default=text("now()"), nullable=False)
+    created_at = Column(
+        TIMESTAMP(timezone=True), server_default=text("now()"), nullable=False
+    )
 
 
 class Founder(Base):
     __tablename__ = "Founders"
 
-    startup_id = Column(Integer, ForeignKey("Startup.id", ondelete="CASCADE"), nullable=False, primary_key=True)
-    user_id = Column(Integer, ForeignKey("User.id", ondelete="CASCADE"), nullable=False, primary_key=True)
+    startup_id = Column(
+        Integer,
+        ForeignKey("Startup.id", ondelete="CASCADE"),
+        nullable=False,
+        primary_key=True,
+    )
+    user_id = Column(
+        Integer,
+        ForeignKey("User.id", ondelete="CASCADE"),
+        nullable=False,
+        primary_key=True,
+    )
 
     startup = relationship("Startups")
     user = relationship("Users")
@@ -45,7 +58,12 @@ class Founder(Base):
 class Mentor(Base):
     __tablename__ = "Mentors"
 
-    user_id = Column(Integer, ForeignKey("User.id", ondelete="CASCADE"), nullable=False, primary_key=True)
+    user_id = Column(
+        Integer,
+        ForeignKey("User.id", ondelete="CASCADE"),
+        nullable=False,
+        primary_key=True,
+    )
     expertise = Column(String, nullable=True)
     availablity = Column(Boolean, nullable=False)
 
@@ -55,8 +73,18 @@ class Mentor(Base):
 class Follow(Base):
     __tablename__ = "Follows"
 
-    following_user_id = Column(Integer, ForeignKey("User.id", ondelete="CASCADE"), nullable=False, primary_key=True)
-    follower_user_id = Column(Integer, ForeignKey("User.id", ondelete="CASCADE"), nullable=False, primary_key=True)
+    following_user_id = Column(
+        Integer,
+        ForeignKey("User.id", ondelete="CASCADE"),
+        nullable=False,
+        primary_key=True,
+    )
+    follower_user_id = Column(
+        Integer,
+        ForeignKey("User.id", ondelete="CASCADE"),
+        nullable=False,
+        primary_key=True,
+    )
 
     following = relationship("Users")
     follower = relationship("Startups")
@@ -65,8 +93,12 @@ class Follow(Base):
 class Mentorship(Base):
     __tablename__ = "Mentorships"
 
-    mentor_id = Column(Integer, ForeignKey("Mentor.user_id", ondelete="CASCADE"), nullable=False)
-    mentee_id = Column(Integer, ForeignKey("User.id", ondelete="CASCADE"), nullable=False)
+    mentor_id = Column(
+        Integer, ForeignKey("Mentor.user_id", ondelete="CASCADE"), nullable=False
+    )
+    mentee_id = Column(
+        Integer, ForeignKey("User.id", ondelete="CASCADE"), nullable=False
+    )
 
     mentor = relationship("Mentor")
     mentee = relationship("Users")
@@ -78,7 +110,11 @@ class Blog(Base):
     id = Column(Integer, primary_key=True, index=True, nullable=False)
     title = Column(String, nullable=False)
     content = Column(String, nullable=False)
-    author_id = Column(Integer, ForeignKey("User.id", ondelete="CASCADE"), nullable=False)
-    created_at = Column(TIMESTAMP(timezone=True), server_default=text("now()"), nullable=False)
+    author_id = Column(
+        Integer, ForeignKey("User.id", ondelete="CASCADE"), nullable=False
+    )
+    created_at = Column(
+        TIMESTAMP(timezone=True), server_default=text("now()"), nullable=False
+    )
 
     author = relationship("Users")
