@@ -6,10 +6,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 reproca = Reproca()
 
-
-@reproca.method
-async def get_languages() -> list[str]:
-    return [
+languages = [
         "Python",
         "Rust",
         "Typescript",
@@ -20,7 +17,13 @@ async def get_languages() -> list[str]:
         "C",
         "C++",
     ]
-
+@reproca.method
+async def get_languages() -> list[str]:
+    return languages
+@reproca.method
+async def add_language(language: str) -> str:
+    languages.append(language)
+    return language
 
 # This will generate API bindings for Typescript inside the client src directory.
 with Path("../client/src/api.ts").open("w") as file:
@@ -41,3 +44,4 @@ app = reproca.build(
         )
     ],
 )
+
