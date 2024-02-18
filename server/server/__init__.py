@@ -45,7 +45,7 @@ async def spa_route(request: Request) -> FileResponse:
 
 
 app = reproca.build(
-    debug=True,  # /docs is broken, not sure what else debug does.
+    debug=True,
     routes=[
         Mount(
             "/assets", app=StaticFiles(directory="../client/dist/assets"), name="assets"
