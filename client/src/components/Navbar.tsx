@@ -1,3 +1,4 @@
+
 import {
     Avatar,
     Button,
@@ -87,4 +88,12 @@ export function Navbar() {
             </NavbarContent>
         </NextUINavbar>
     )
+
+import React from "react"
+
+function Navbar() {
+    return <div>Navbar</div>
+
 }
+
+export default Navbar
