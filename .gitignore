@@ -5,3 +5,4 @@
 **/.ruff_cache/
 client/dist/
 server/uploaded
+server/database.db
