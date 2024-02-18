@@ -8,7 +8,7 @@ import "~/index.css"
 import {PageNotFound} from "~/routes/PageNotFound"
 import {Register} from "~/routes/Register"
 import {Root} from "~/routes/Root"
-import Writeblog from "./CustomComponents/Writeblog"
+import Writeblog from "./Components/Writeblog"
 import {Login} from "./routes/Login"
 import {User} from "./routes/User"
 
