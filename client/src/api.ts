@@ -31,20 +31,7 @@ export async function follow_user(user_id:number):Promise<ReprocaMethodResponse<
 export async function unfollow_user(user_id:number):Promise<ReprocaMethodResponse<null>>{return await reproca.callMethod('/unfollow_user',{user_id})}
 /** Return session user. */
 export async function get_session():Promise<ReprocaMethodResponse<((User)|(null))>>{return await reproca.callMethod('/get_session',{})}
-/** Get Mentorship. */
-export async function get_mentorship(mentor_id:number):Promise<ReprocaMethodResponse<boolean>>{return await reproca.callMethod('/get_mentorship',{mentor_id})}
-/** Delete Mentorship. */
-export async function delete_mentorship(mentor_id:number):Promise<ReprocaMethodResponse<null>>{return await reproca.callMethod('/delete_mentorship',{mentor_id})}
-/** Become a mentor. */
-export async function become_mentor(expertise:string,availability:number):Promise<ReprocaMethodResponse<boolean>>{return await reproca.callMethod('/become_mentor',{expertise,availability})}
-/** Return all mentors. */
-export async function find_mentors():Promise<ReprocaMethodResponse<(Mentor)[]>>{return await reproca.callMethod('/find_mentors',{})}
-/** Return filtered mentors. */
 export async function filter_mentors(expertise:string,availability:number):Promise<ReprocaMethodResponse<(Mentor)[]>>{return await reproca.callMethod('/filter_mentors',{expertise,availability})}
-/** Update mentor. */
-export async function update_mentor(expertise:string,availability:number):Promise<ReprocaMethodResponse<boolean>>{return await reproca.callMethod('/update_mentor',{expertise,availability})}
-/** Delete mentor. */
-export async function delete_mentor():Promise<ReprocaMethodResponse<null>>{return await reproca.callMethod('/delete_mentor',{})}
 /** Create new startup. Returns startup id. */
 export async function create_startup(name:string,description:string,mission_statement:string,offerings:string):Promise<ReprocaMethodResponse<boolean>>{return await reproca.callMethod('/create_startup',{name,description,mission_statement,offerings})}
 /** Add founder to startup. */
