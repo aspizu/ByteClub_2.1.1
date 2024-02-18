@@ -88,6 +88,7 @@ async def get_blog(blog_id: int) -> Blog | None:
         SELECT
             B.Title,
             B.Content,
+            B.CreatedAt,
             U.Username,
             U.Name,
             F.Path
@@ -105,6 +106,7 @@ async def get_blog(blog_id: int) -> Blog | None:
         id=blog_id,
         title=row.Title,
         content=row.Content,
+        created_at=row.CreatedAt,
         author_username=row.Username,
         author_name=row.Name,
         author_picture=row.Path,
