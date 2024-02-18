@@ -1,4 +1,5 @@
 import {NextUIProvider} from "@nextui-org/react"
+import "material-symbols"
 import {StrictMode} from "react"
 import {createRoot} from "react-dom/client"
 import {RouterProvider, createBrowserRouter} from "react-router-dom"

@@ -15,9 +15,11 @@
     },
     "dependencies": {
         "@nextui-org/react": "^2.2.9",
+        "@preact/signals-react": "^2.0.0",
         "framer-motion": "^11.0.5",
         "localforage": "^1.10.0",
         "match-sorter": "^6.3.4",
+        "material-symbols": "^0.15.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-router-dom": "^6.22.1",
