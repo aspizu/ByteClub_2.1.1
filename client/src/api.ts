@@ -17,5 +17,15 @@ export async function update_profile(bio:((string)|(null))):Promise<ReprocaMetho
 export async function follow_user(user_id:number):Promise<ReprocaMethodResponse<null>>{return await reproca.callMethod('/follow_user',{user_id})}
 /** Unfollow a user. */
 export async function unfollow_user(user_id:number):Promise<ReprocaMethodResponse<null>>{return await reproca.callMethod('/unfollow_user',{user_id})}
+/** Get Mentorship. */
+export async function get_mentorship(mentor_id:number):Promise<ReprocaMethodResponse<boolean>>{return await reproca.callMethod('/get_mentorship',{mentor_id})}
+/** Delete Mentorship. */
+export async function delete_mentorship(mentor_id:number):Promise<ReprocaMethodResponse<null>>{return await reproca.callMethod('/delete_mentorship',{mentor_id})}
+/** Become a mentor. */
+export async function become_mentor(expertise:string,availability:number):Promise<ReprocaMethodResponse<boolean>>{return await reproca.callMethod('/become_mentor',{expertise,availability})}
+/** Update mentor. */
+export async function update_mentor(expertise:string,availability:number):Promise<ReprocaMethodResponse<boolean>>{return await reproca.callMethod('/update_mentor',{expertise,availability})}
+/** Delete mentor. */
+export async function delete_mentor():Promise<ReprocaMethodResponse<null>>{return await reproca.callMethod('/delete_mentor',{})}
 /** None */
 export interface Blog{id:number;title:string;content:string;author_id:number;author_username:string;author_picture:string;}

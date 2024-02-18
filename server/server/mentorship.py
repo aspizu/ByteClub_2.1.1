@@ -9,6 +9,11 @@ async def get_mentorship(mentor_id: int, session: User) -> bool:
     """Get Mentorship."""
     con, cur = db()
     cur.execute(
+        "SELECT * FROM Mentorship WHERE user_id = ? AND mentor_id = ?", [session.id, mentor_id]
+    )
+    if cur.fetchone():
+        return False
+    cur.execute(
         "INSERT INTO Mentorship (user_id, mentor_id) VALUES (?, ?)",
         [session.id, mentor_id],
     )
@@ -17,7 +22,7 @@ async def get_mentorship(mentor_id: int, session: User) -> bool:
 
 
 @reproca.method
-async def delete_mentorship(mentor_id: int, session: User) -> bool:
+async def delete_mentorship(mentor_id: int, session: User) -> None:
     """Delete Mentorship."""
     con, cur = db()
     cur.execute(
@@ -25,4 +30,3 @@ async def delete_mentorship(mentor_id: int, session: User) -> bool:
         [session.id, mentor_id],
     )
     con.commit()
-    return True

@@ -8,7 +8,7 @@ from .db import db
 async def become_mentor(session: User, expertise: str, availability: int) -> bool:
     """Become a mentor."""
     con, cur = db()
-    cur.execute("SELECT ID FROM Mentor WHERE user_id = ?", [session.id])
+    cur.execute("SELECT user_id FROM Mentor WHERE user_id = ?", [session.id])
     if cur.fetchone():
         return False
     cur.execute(
@@ -19,19 +19,19 @@ async def become_mentor(session: User, expertise: str, availability: int) -> boo
     return True
 
 
-@reproca.method
-async def find_mentors() -> list[dict]:
-    """Return all mentors."""
-    con, cur = db()
-    cur.execute(
-        """
-        SELECT User.ID, Username, Picture, Expertise, Availability
-        FROM Mentor
-        INNER JOIN User
-        WHERE Mentor.user_id = User.ID
-        """
-    )
-    return [dict(row) for row in cur.fetchall()]
+# @reproca.method
+# async def find_mentors() -> list[dict[Mentor]]:
+#     """Return all mentors."""
+#     con, cur = db()
+#     cur.execute(
+#         """
+#         SELECT User.ID, Username, Picture, Expertise, Availability
+#         FROM Mentor
+#         INNER JOIN User
+#         WHERE Mentor.user_id = User.ID
+#         """
+#     )
+#     return [dict[r] for row in cur.fetchall()]
 
 
 @reproca.method
@@ -47,9 +47,9 @@ async def update_mentor(session: User, expertise: str, availability: int) -> boo
 
 
 @reproca.method
-async def delete_mentor(session: User) -> bool:
+async def delete_mentor(session: User) -> None:
     """Delete mentor."""
     con, cur = db()
     cur.execute("DELETE FROM Mentor WHERE user_id = ?", [session.id])
     con.commit()
-    return True
+

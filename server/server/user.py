@@ -47,7 +47,7 @@ async def login(response: Response, username: str, password: str) -> bool:
         "SELECT ID, Password, CreatedAt FROM User WHERE Username = ?", [username]
     )
     row: Row | None = cur.fetchone()
-    if row is None or is_password_matching(row.Password, password, row.CreatedAt):
+    if row is None or not is_password_matching(row.Password, password, row.CreatedAt):
         return False
     if password_needs_rehash(row.Password):
         cur.execute(
