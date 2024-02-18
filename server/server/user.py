@@ -77,7 +77,7 @@ async def register(username: str, password: str) -> bool:
         [username, hash_password(password, created_at), created_at],
     )
     con.commit()
-    return False
+    return True
 
 
 @reproca.method
