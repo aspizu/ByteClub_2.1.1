@@ -57,3 +57,4 @@ export interface Startup{id:number;name:string;description:string;mission_statem
 export interface User{id:number;username:string;created_at:number;}
 /** Mentor structure. */
 export interface Mentor{user_id:number;username:string;expertise:string;availability:number;picture:string;}
+/** Mentor structure. */
