@@ -10,7 +10,7 @@ export function UserBlogs({
     userBlogs: api.UserBlog[]
 }) {
     return (
-        <div>
+        <div className="flex flex-col gap-4">
             {userBlogs.map((blog) => (
                 <Card key={blog.id}>
                     <CardHeader className="px-4">
@@ -27,7 +27,7 @@ export function UserBlogs({
                     </CardHeader>
                     <Divider />
                     <CardBody>
-                        <p className="">{blog.content}</p>
+                        <p className="max-h-20 overflow-hidden">{blog.content}</p>
                     </CardBody>
                 </Card>
             ))}

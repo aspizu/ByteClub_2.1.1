@@ -8,6 +8,7 @@ import "~/index.css"
 import {PageNotFound} from "~/routes/PageNotFound"
 import {Register} from "~/routes/Register"
 import {Root} from "~/routes/Root"
+import {Blog} from "./routes/Blog"
 import {Login} from "./routes/Login"
 import {User} from "./routes/User"
 import {Write} from "./routes/Write"
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
     {
         path: "/user/:username",
         element: <User />,
+    },
+    {
+        path: "/blog/:id",
+        element: <Blog />,
     },
     {
         path: "/write",

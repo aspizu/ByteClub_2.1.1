@@ -7,7 +7,7 @@ from .db import Row, db
 from .misc import seconds_since_1970
 
 MAX_BLOG_TITLE_LENGTH = 256
-MAX_BLOG_CONTENT_LENGTH = 512
+MAX_BLOG_CONTENT_LENGTH = 1024
 
 
 def is_blog_title_ok(title: str) -> bool:

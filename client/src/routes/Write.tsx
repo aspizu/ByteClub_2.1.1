@@ -1,10 +1,13 @@
 import {Button, Input, Textarea} from "@nextui-org/react"
 import {useSignal} from "@preact/signals-react"
-import {useRef} from "react"
+import {useEffect, useRef} from "react"
 import toast from "react-hot-toast"
 import {useNavigate} from "react-router-dom"
 import * as api from "~/api"
 import {Navbar} from "~/components/Navbar"
+import {session} from "~/globalState"
+
+const MAX_BLOG_CONTENT_LENGTH = 1024
 
 export function Write() {
     const navigate = useNavigate()
@@ -12,6 +15,11 @@ export function Write() {
     const content = useSignal("")
     const titleRef = useRef<HTMLInputElement>(null)
     const contentRef = useRef<HTMLTextAreaElement>(null)
+    useEffect(() => {
+        if (!session.value) {
+            navigate("/login")
+        }
+    }, [])
     async function submit() {
         if (!title.value.trim()) {
             return titleRef.current?.focus()
@@ -43,6 +51,10 @@ export function Write() {
                     label="Content"
                     value={content.value}
                     onValueChange={(value) => (content.value = value)}
+                    isInvalid={content.value.length > MAX_BLOG_CONTENT_LENGTH}
+                    errorMessage={
+                        content.value.length > MAX_BLOG_CONTENT_LENGTH && "Too long."
+                    }
                 />
                 <Button color="primary" onClick={submit}>
                     Create Blog
