@@ -160,3 +160,24 @@ async def unfollow_startup(startup_id: int, session: User) -> bool:
     )
     con.commit()
     return True
+
+
+@reproca.method
+async def get_founded_startups(session: User) -> list[Startup]:
+    """Return startups founded by user."""
+    _, cur = db()
+    cur.execute(
+        "SELECT * FROM Startup WHERE ID IN (SELECT Startup FROM Founder WHERE founder = ?)",
+        [session.id],
+    )
+    return [
+        Startup(
+            row.ID,
+            row.Name,
+            row.Description,
+            row.MissionStatement,
+            row.Offering,
+            row.CreatedAt,
+        )
+        for row in cur.fetchall()
+    ]
