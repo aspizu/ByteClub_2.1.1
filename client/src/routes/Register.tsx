@@ -51,7 +51,7 @@ export function Register() {
                 toast.error("That username is already taken")
             } else {
                 console.error(response.err)
-                toast.error("An error occured")
+                toast.error("An error occurred")
             }
         }
     }

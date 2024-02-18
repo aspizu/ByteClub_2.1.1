@@ -42,7 +42,7 @@ export function Login() {
                 passwordRef.current?.focus()
             } else {
                 console.error(response.err)
-                toast.error("An error occured")
+                toast.error("An error occurred")
             }
         }
     }

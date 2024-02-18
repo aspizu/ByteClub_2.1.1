@@ -1,22 +1,20 @@
-import {Card, CardBody, CardHeader, Divider} from "@nextui-org/react"
+import {Card, CardHeader, CardBody, Image} from "@nextui-org/react"
 
-// id:number;title:string;content:string;author_username:string;author_name:string;author_picture
-function BlogCard(props: {
-    id?: number
-    title: string
-    content: string
-    author_username: string
-    author_name: string
-    author_picture?: any
-}) {
+function BlogCard() {
     return (
         <Card className="py-4">
             <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-                {props.title}
+                <p className="text-tiny uppercase font-bold">Daily Mix</p>
+                <small className="text-default-500">12 Tracks</small>
+                <h4 className="font-bold text-large">Frontend Radio</h4>
             </CardHeader>
-            <Divider />
             <CardBody className="overflow-visible py-2">
-                <p className="text-tiny uppercase font-bold">{props.author_name}</p>
+                <Image
+                    alt="Card background"
+                    className="object-cover rounded-xl"
+                    src="/images/hero-card-complete.jpeg"
+                    width={270}
+                />
             </CardBody>
         </Card>
     )

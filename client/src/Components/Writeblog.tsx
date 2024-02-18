@@ -69,7 +69,7 @@ import {session} from "~/globalState"
 function Writeblog() {
     let [caption, setCaption] = useState("")
     const [selectedImage, setSelectedImage] = useState(null)
-    let [currentUser, serCurrentUser] = useState(session.value?.username)
+    let [currentUser, setCurrentUser] = useState(session.value?.username)
 
     function mySendButtonHandler() {
         api.post_blog(currentUser || "", caption)
