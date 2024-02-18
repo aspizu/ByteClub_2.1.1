@@ -35,8 +35,14 @@ export function Login() {
             toast.success("Logged-in successfully")
             navigate("/")
         } else {
-            console.error(response.err)
-            toast.error("An error occured")
+            if (response.err == undefined) {
+                toast.error("Incorrect password")
+                password.value = ""
+                passwordRef.current?.focus()
+            } else {
+                console.error(response.err)
+                toast.error("An error occured")
+            }
         }
     }
     return (
