@@ -33,7 +33,7 @@ export function Write() {
             toast.success("Your blog post is live")
         } else {
             console.error(response.err)
-            toast.error("An error occured")
+            toast.error("An error occurred")
         }
     }
     return (

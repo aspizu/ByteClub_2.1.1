@@ -9,6 +9,7 @@ import {PageNotFound} from "~/routes/PageNotFound"
 import {Register} from "~/routes/Register"
 import {Root} from "~/routes/Root"
 import {Blog} from "./routes/Blog"
+import {Explore} from "./routes/Explore"
 import {Login} from "./routes/Login"
 import {User} from "./routes/User"
 import {Write} from "./routes/Write"
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
     {
         path: "/",
         element: <Root />,
+    },
+    {
+        path: "/explore",
+        element: <Explore />,
     },
     {
         path: "/login",
