@@ -3,7 +3,6 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 import msgspec
 from reproca import Reproca
-from sqlalchemy import true
 from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import FileResponse
@@ -28,7 +27,7 @@ class User(msgspec.Struct):
 # --> User
 # Type used to store user sessions, any information can be stored together with the user
 # sessions.
-reproca: Reproca[int, User] = Reproca(debug = true)
+reproca: Reproca[int, User] = Reproca(debug=True)
 
 # You should import all modules which create reproca methods here.
 from . import blog, mentorship, startup, user  # noqa: E402

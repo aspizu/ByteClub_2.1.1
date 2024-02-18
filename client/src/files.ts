@@ -7,12 +7,12 @@ import {ReprocaMethodResponse} from "./reproca"
  * @returns ok: the url which will return the uploaded file, err: exceed max upload size or disallowed extension
  */
 export async function uploadFile(
-    fileInput: HTMLInputElement
+    fileInput: HTMLInputElement,
 ): Promise<ReprocaMethodResponse<string>> {
     const file = fileInput.files?.[0]
     if (!file) {
         throw new TypeError(
-            "uploadFile called with input which contains no selected files. This should have been handled by the caller."
+            "uploadFile called with input which contains no selected files. This should have been handled by the caller.",
         )
     }
     const formData = new FormData()
@@ -25,7 +25,7 @@ export async function uploadFile(
         if (!response.ok) {
             return {
                 err: new Error(
-                    "Either file extension is incorrect or file size exceeds maximum upload size."
+                    "Either file extension is incorrect or file size exceeds maximum upload size.",
                 ),
             }
         }

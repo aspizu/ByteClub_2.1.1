@@ -4,17 +4,19 @@ import {
     Card,
     CardBody,
     CardHeader,
+    Chip,
     CircularProgress,
     Divider,
-    Link,
 } from "@nextui-org/react"
 import timeago from "epoch-timeago"
 import toast from "react-hot-toast"
 import {useParams} from "react-router-dom"
 import * as api from "~/api"
 import {Navbar} from "~/components/Navbar"
+import {UserBlogs} from "~/components/UserBlogs"
 import {session} from "~/globalState"
 import {useMethod} from "~/reproca"
+import {PageNotFound} from "./PageNotFound"
 
 function formatFollowersString(followers: [string, string][]) {
     if (followers.length === 0) {
@@ -58,6 +60,7 @@ function UserContent({
     const isFollowing =
         !!session.value &&
         followers.map(([username, _]) => username).includes(session.value.username)
+    const isDashboard = session.value?.username === username
     async function followUser() {
         if (isFollowing) {
             toast(`You are no longer following ${name}`)
@@ -73,7 +76,7 @@ function UserContent({
     return (
         <Card>
             <CardHeader className="gap-3">
-                <Avatar name={username} size="lg" />
+                <Avatar name={username} src={picture || undefined} size="lg" />
                 <div className="flex flex-col justify-center">
                     <p className="font-bold text-lg">{name}</p>
                     <p className="text-gray-500">@{username}</p>
@@ -98,7 +101,34 @@ function UserContent({
             </CardHeader>
             <Divider />
             <CardBody className="gap-2">
+                <div className="flex gap-2">
+                    {link && (
+                        <Chip className="" as="a" href={link} target="_none_">
+                            {link.length > 25 ? link.slice(0, 25) + "..." : link}
+                        </Chip>
+                    )}
+                    {email && <Chip>{email}</Chip>}
+                </div>
+                <div className="flex gap-4 items-center">
+                    <p className="font-bold">Bio</p>
+                    {isDashboard && (
+                        <Button
+                            className="material-symbols-rounded text-lg"
+                            isIconOnly
+                            size="sm"
+                            variant="flat"
+                        >
+                            edit
+                        </Button>
+                    )}
+                </div>
                 <p>{bio}</p>
+                {experience && (
+                    <>
+                        <p className="font-bold">Experience</p>
+                        <p>{experience}</p>
+                    </>
+                )}
                 <p className="text-gray-400 text-sm">
                     Joined {timeago(created_at * 1000)}
                 </p>
@@ -111,41 +141,6 @@ function UserContent({
     )
 }
 
-function UserBlogs({
-    username,
-    userBlogs,
-    fetchUserBlogs,
-}: {
-    username: string
-    userBlogs: api.UserBlog[]
-    fetchUserBlogs: () => void
-}) {
-    return (
-        <div>
-            {userBlogs.map((blog) => (
-                <Card key={blog.id}>
-                    <CardHeader className="px-4">
-                        <Link
-                            className="font-bold text-lg"
-                            color="foreground"
-                            href={`/blog/${blog.id}`}
-                        >
-                            {blog.title}
-                        </Link>
-                        <p className="ml-auto text-gray-400 text-sm">
-                            Posted {timeago(blog.created_at * 1000)}
-                        </p>
-                    </CardHeader>
-                    <Divider />
-                    <CardBody>
-                        <p className="">{blog.content}</p>
-                    </CardBody>
-                </Card>
-            ))}
-        </div>
-    )
-}
-
 export function User() {
     const {username} = useParams()
     const [user, fetchUser] = useMethod(() => api.get_user(username!), [])
@@ -153,22 +148,21 @@ export function User() {
         () => api.get_user_blogs(username!),
         []
     )
+    if (user?.ok === null) {
+        return <PageNotFound />
+    }
     return (
         <div className="flex flex-col h-full">
             <Navbar />
             <div className="flex flex-col h-full w-[95vw] max-w-[1024px] mx-auto p-4 gap-5">
-                {user?.ok && userBlogs?.ok ? (
+                {user?.ok != null && userBlogs?.ok != null ? (
                     <>
                         <UserContent
                             user={{...user.ok, username: username!}}
                             fetchUser={fetchUser}
                         />
                         <p className="font-bold">Blogs</p>
-                        <UserBlogs
-                            username={username!}
-                            userBlogs={userBlogs.ok}
-                            fetchUserBlogs={fetchUserBlogs}
-                        />
+                        <UserBlogs username={username!} userBlogs={userBlogs.ok} />
                     </>
                 ) : (
                     <CircularProgress className="m-auto" />
