@@ -122,3 +122,33 @@ async def delete_startup(startup_id: int, session: User) -> bool:
     cur.execute("DELETE FROM Startup WHERE ID = ?", [id])
     con.commit()
     return True
+
+
+@reproca.method
+async def follow_startup(startup_id: int, session: User) -> bool:
+    """Follow a startup."""
+    con, cur = db()
+    cur.execute(
+        "SELECT * FROM FollowStartup WHERE follower = ? AND following = ?",
+        [session.id, startup_id],
+    )
+    if cur.fetchone():
+        return False
+    cur.execute(
+        "INSERT INTO FollowStartup (follower, following, createdat) VALUES (?, ?, ?)",
+        [session.id, startup_id, seconds_since_1970()],
+    )
+    con.commit()
+    return True
+
+
+@reproca.method
+async def unfollow_startup(startup_id: int, session: User) -> bool:
+    """Unfollow a startup."""
+    con, cur = db()
+    cur.execute(
+        "DELETE FROM FollowStartup WHERE follower = ? AND following = ?",
+        [session.id, startup_id],
+    )
+    con.commit()
+    return True
