@@ -96,8 +96,8 @@ async def get_startup(startup_id: int) -> Startup | None:
     cur.execute(
         """
         SELECT
-        F.Username,
-        F.Name,
+        U.Username,
+        U.Name,
         Z.Path,
         F.CreatedAt
         FROM Founder AS F
@@ -111,7 +111,7 @@ async def get_startup(startup_id: int) -> Startup | None:
         Founder(
             username=row.Username,
             name=row.Name,
-            picture=row.Picture,
+            picture=row.Path,
             created_at=row.CreatedAt,
         )
         for row in cur.fetchall()
@@ -121,7 +121,7 @@ async def get_startup(startup_id: int) -> Startup | None:
         SELECT Username, Name
         FROM User
         INNER JOIN FollowStartup
-        WHERE Startup = ? AND User.ID = Follower
+        WHERE Following = ? AND User.ID = Follower
         """,
         [startup_id],
     )

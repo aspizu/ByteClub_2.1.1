@@ -11,6 +11,7 @@ import {Root} from "~/routes/Root"
 import {Blog} from "./routes/Blog"
 import {Explore} from "./routes/Explore"
 import {Login} from "./routes/Login"
+import {Startup} from "./routes/Startup"
 import {User} from "./routes/User"
 import {Write} from "./routes/Write"
 
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
     {
         path: "/blog/:id",
         element: <Blog />,
+    },
+    {
+        path: "/startup/:id",
+        element: <Startup />,
     },
     {
         path: "/write",
