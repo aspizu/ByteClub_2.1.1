@@ -4,11 +4,11 @@ from __future__ import annotations
 import msgspec
 from server.misc import seconds_since_1970
 from . import User, reproca
-from .db import db, get_last_insert_ID
+from .db import db
 
 
 class Startup(msgspec.Struct):
-    """Startup structure."""
+    """Startup."""
 
     id: int
     name: str
@@ -20,16 +20,18 @@ class Startup(msgspec.Struct):
 
 @reproca.method
 async def create_startup(
-    name: str, description: str, mission_statement: str, offerings: str, session: User
+    session: User, name: str, description: str, mission_statement: str, offerings: str
 ) -> bool:
     """Create new startup. Returns startup id."""
     con, cur = db()
     cur.execute(
-        "INSERT INTO Startup (Name, Offering, Description, MissionStatement, CreatedAt) VALUES (?, ?, ?, ?, ?)",
+        """
+        INSERT INTO Startup (Name, Offering, Description, MissionStatement, CreatedAt)
+        VALUES (?, ?, ?, ?, ?)""",
         [name, description, offerings, mission_statement, seconds_since_1970()],
     )
     con.commit()
-    startup_id = get_last_insert_ID(cur, "Startup")
+    startup_id = cur.lastrowid
     cur.execute(
         "INSERT INTO Founder (user_id, startup_id, createdat) VALUES (?, ?, ?)",
         [session.id, startup_id, seconds_since_1970()],
@@ -39,15 +41,17 @@ async def create_startup(
 
 
 @reproca.method
-async def add_founder(user_id: int, startup_id: int, session: User) -> bool:
+async def add_founder(session: User, user_id: int, startup_id: int) -> bool:
     """Add founder to startup."""
     con, cur = db()
-    cur.execute("SELECT user_id FROM Founder WHERE startup_id = ?", [startup_id])
-    founder_ids = [row.User_id for row in cur.fetchall()]
-    if session.id not in founder_ids:
+    cur.execute(
+        "SELECT ID FROM Founder WHERE User = ? AND Startup = ?",
+        [session.id, startup_id],
+    )
+    if cur.fetchone() is None:
         return False
     cur.execute(
-        "INSERT INTO Founder (user_id, startup_id, createdat) VALUES (?, ?, ?)",
+        "INSERT INTO Founder (User, Startup, CreatedAt) VALUES (?, ?, ?)",
         [user_id, startup_id, seconds_since_1970()],
     )
     con.commit()
@@ -57,7 +61,7 @@ async def add_founder(user_id: int, startup_id: int, session: User) -> bool:
 @reproca.method
 async def get_startup(startup_id: int) -> Startup:
     """Return startup by id."""
-    con, cur = db()
+    _, cur = db()
     cur.execute("SELECT * FROM Startup WHERE ID = ?", [startup_id])
     row = cur.fetchone()
     return Startup(
@@ -73,7 +77,7 @@ async def get_startup(startup_id: int) -> Startup:
 @reproca.method
 async def get_startups() -> list[Startup]:
     """Return all startups."""
-    con, cur = db()
+    _, cur = db()
     cur.execute("SELECT * FROM Startup")
     return [
         Startup(
@@ -90,23 +94,40 @@ async def get_startups() -> list[Startup]:
 
 @reproca.method
 async def update_startup(
-    startup_id: int,
-    name: str,
-    description: str,
-    mission_statement: str,
-    offerings: str,
     session: User,
+    startup_id: int,
+    name: str | None = None,
+    description: str | None = None,
+    mission_statement: str | None = None,
+    offerings: str | None = None,
 ) -> bool:
     """Update startup."""
+    if name is description is mission_statement is offerings is None:
+        return True
     con, cur = db()
-    cur.execute("SELECT user_id FROM Founder WHERE startup_id = ?", [startup_id])
-    founder_ids = [row.User_id for row in cur.fetchall()]
-    if session.id not in founder_ids:
-        return False
     cur.execute(
-        "UPDATE Startup SET Name = ?, Description = ?, MissionStatement = ?, Offering = ? WHERE ID = ?",
-        [name, description, mission_statement, offerings, startup_id],
+        "SELECT ID FROM Founder WHERE Startup = ? AND User = ?",
+        [startup_id, session.id],
     )
+    if cur.fetchone() is None:
+        return False
+    query = "UPDATE Startup SET "
+    params = []
+    if name is not None:
+        query += "Name = ?, "
+        params.append(name)
+    if description is not None:
+        query += "Description = ?, "
+        params.append(description)
+    if mission_statement is not None:
+        query += "MissionStatement = ?, "
+        params.append(mission_statement)
+    if offerings is not None:
+        query += "Offering = ?, "
+        params.append(offerings)
+    query = query.rstrip(", ") + " WHERE ID = ?"
+    params.append(startup_id)
+    cur.execute(query, params)
     con.commit()
     return True
 
@@ -115,9 +136,11 @@ async def update_startup(
 async def delete_startup(startup_id: int, session: User) -> bool:
     """Delete a startup."""
     con, cur = db()
-    cur.execute("SELECT user_id FROM Founder WHERE startup_id = ?", [startup_id])
-    founder_ids = [row.User_id for row in cur.fetchall()]
-    if session.id not in founder_ids:
+    cur.execute(
+        "SELECT ID FROM Founder WHERE Startup = ? AND User = ?",
+        [startup_id, session.id],
+    )
+    if cur.fetchone() is None:
         return False
     cur.execute("DELETE FROM Startup WHERE ID = ?", [id])
     con.commit()

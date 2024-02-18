@@ -1,5 +1,4 @@
 from __future__ import annotations
-from doctest import debug
 from pathlib import Path
 from typing import TYPE_CHECKING
 import msgspec
@@ -31,8 +30,9 @@ class User(msgspec.Struct):
 reproca: Reproca[int, User] = Reproca(debug=True)
 
 # You should import all modules which create reproca methods here.
-from . import blog, user, mentorship, mentor, startup  # noqa: E402
-_ = (user, blog, mentorship, mentor, startup)  
+from . import blog, mentorship, startup, user  # noqa: E402
+
+_ = (user, blog, mentorship, startup)
 
 # This will generate API bindings for Typescript inside the client src directory.
 with Path("../client/src/api.ts").open("w") as file:

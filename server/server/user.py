@@ -1,10 +1,11 @@
 """User functionality."""
 from __future__ import annotations
 import re
+from typing import Literal
 import msgspec
 
 # Don't put this in a TYPE_CHECKING block, else reproca fails.
-from reproca import Response
+from reproca import Response  # noqa: TCH002
 from . import User, reproca
 from .db import Row, db
 from .misc import seconds_since_1970
@@ -24,9 +25,11 @@ EMAIL_RE = re.compile(
 
 
 class Search(msgspec.Struct):
+    """Search results."""
+
+    type: Literal["user", "blog", "startup"]
     name: str
-    type: str
-    object_id: int
+    id: int
 
 
 def is_username_ok(username: str) -> bool:
@@ -39,9 +42,12 @@ def is_email_ok(email: str) -> bool:
     return bool(EMAIL_RE.fullmatch(email))
 
 
-def is_bio_ok(bio: str) -> bool:
-    """Return true if bio is valid."""
-    return len(bio) <= MAX_BIO_LENGTH
+def name_from_username(username: str) -> str:
+    """Convert username into a proper name."""
+    return " ".join(
+        i.strip().capitalize()
+        for i in username.replace("-", " ").replace("_", " ").split()
+    )
 
 
 @reproca.method
@@ -79,8 +85,13 @@ async def register(username: str, password: str) -> bool:
         return False
     created_at = seconds_since_1970()
     cur.execute(
-        "INSERT INTO User (Username, Password, CreatedAt) VALUES (?, ?, ?)",
-        [username, hash_password(password, created_at), created_at],
+        "INSERT INTO User (Username, Name, Password, CreatedAt) VALUES (?, ?, ?, ?)",
+        [
+            username,
+            name_from_username(username),
+            hash_password(password, created_at),
+            created_at,
+        ],
     )
     con.commit()
     return True
@@ -111,16 +122,50 @@ async def set_password(
 
 
 @reproca.method
-async def update_profile(session: User, bio: str | None) -> bool:
+async def update_user(
+    session: User,
+    link: str | None,
+    email: str | None,
+    name: str | None,
+    bio: str | None,
+    experience: str | None,
+    is_mentor: bool | None,
+    mentor_available: bool | None,
+    mentor_expertise: str | None,
+) -> None:
     """Change given details for user."""
-    if not bio:
-        return True
-    if not is_bio_ok(bio):
-        return False
-    con, cur = db()
-    cur.execute("UPDATE User SET Bio = ? WHERE ID = ?", [bio, session.id])
-    con.commit()
-    return True
+    params = []
+    fields = []
+    if link is not None:
+        fields.append("Link = ?")
+        params.append(link)
+    if email is not None and is_email_ok(email):
+        fields.append("Email = ?")
+        params.append(email)
+    if name is not None:
+        fields.append("Name = ?")
+        params.append(name)
+    if bio is not None:
+        fields.append("Bio = ?")
+        params.append(bio)
+    if experience is not None:
+        fields.append("Experience = ?")
+        params.append(experience)
+    if is_mentor is not None:
+        fields.append("IsMentor = ?")
+        params.append(is_mentor)
+    if mentor_available is not None:
+        fields.append("MentorAvailable = ?")
+        params.append(mentor_available)
+    if mentor_expertise is not None:
+        fields.append("MentorExpertise = ?")
+        params.append(mentor_expertise)
+    if fields:
+        con, cur = db()
+        update_query = f"UPDATE User SET {', '.join(fields)} WHERE ID = ?"  # noqa: S608
+        params.append(session.id)
+        cur.execute(update_query, params)
+        con.commit()
 
 
 @reproca.method
@@ -153,59 +198,96 @@ async def get_session(session: User | None) -> User | None:
 
 @reproca.method
 async def search_all(query: str) -> list[Search]:
-    """Search for all users, blogs and startups"""
-    con, cur = db()
+    """Search for all users, blogs and startups."""
+    query = f"%{query.strip()}%"
+    if query == "%%":
+        return []
+    _, cur = db()
     cur.execute(
-        """
-        SELECT ID,Username
-        FROM User
-        WHERE Username LIKE ?
-        """,
-        [f"%{query}%"],
+        "SELECT * FROM User WHERE Name LIKE ? OR Username LIKE ?",
+        [query, query],
     )
-    list = []
-    for row in cur.fetchall():
-        list.append(Search(row.Username, "user", row.ID))
+    results = [Search("user", row.Username, row.ID) for row in cur.fetchall()]
     cur.execute(
-        """
-        SELECT ID,Title
-        FROM Blog
-        WHERE Title LIKE ?
-        """,
-        [f"%{query}%"],
+        "SELECT * FROM Blog WHERE Title LIKE ? OR Content LIKE ?",
+        [query, query],
     )
-    for row in cur.fetchall():
-        list.append(Search(row.Title, "blog", row.ID))
-
+    results.extend(Search("blog", row.Title, row.ID) for row in cur.fetchall())
     cur.execute(
-        """
-        SELECT ID,Name
-        FROM Startup
-        WHERE Name LIKE ?
-        """,
-        [f"%{query}%"],
+        "SELECT * FROM Startup WHERE Name LIKE ? OR Description LIKE ?",
+        [query, query],
     )
-    for row in cur.fetchall():
-        list.append(Search(row.Name, "startup", row.ID))
-
-    return list
+    results.extend(Search("startup", row.Name, row.ID) for row in cur.fetchall())
+    return results
 
 
-class UserDetails(msgspec.Struct):
+class GetUser(msgspec.Struct):
     """Details from get user."""
 
     id: int
-    link: str | None
-    bio: str | None
+    link: str
+    email: str
+    bio: str
+    experience: str
+    picture: str | None
+    is_mentor: bool
+    mentor_available: bool
+    mentor_expertise: str
     created_at: int
+    followers: list[tuple[str, str]]
+    following: list[tuple[str, str]]
 
 
 @reproca.method
-async def get_user(username: str) -> UserDetails | None:
+async def get_user(username: str) -> GetUser | None:
     """Get a user."""
     _, cur = db()
-    cur.execute("SELECT * FROM User WHERE Username = ?", [username])
+    cur.execute(
+        """
+        SELECT
+            User.ID, Link, Email, Bio, Experience, Path, IsMentor, MentorAvailable,
+            MentorExpertise, User.CreatedAt
+        FROM User
+        LEFT JOIN File
+        ON File.ID = User.Picture
+        WHERE Username = ?
+        """,
+        [username],
+    )
     row: Row | None = cur.fetchone()
     if row is None:
         return None
-    return UserDetails(row.ID, row.Link, row.Bio, row.CreatedAt)
+    cur.execute(
+        """
+        SELECT Username, Name
+        FROM User
+        INNER JOIN FollowUser
+        WHERE Following = ? AND User.ID = Follower
+        """,
+        [row.ID],
+    )
+    followers = [(row.Username, row.Name) for row in cur.fetchall()]
+    cur.execute(
+        """
+        SELECT Username, Name
+        FROM User
+        INNER JOIN FollowUser
+        WHERE Follower = ? AND User.ID = Following
+        """,
+        [row.ID],
+    )
+    following = [(row.Username, row.Name) for row in cur.fetchall()]
+    return GetUser(
+        row.ID,
+        row.Link,
+        row.Email,
+        row.Bio,
+        row.Experience,
+        row.Path,
+        row.IsMentor,
+        row.MentorAvailable,
+        row.MentorExpertise,
+        row.CreatedAt,
+        followers,
+        following,
+    )
