@@ -49,6 +49,27 @@ async def find_mentors() -> list[Mentor]:
 
 
 @reproca.method
+async def filter_mentors(expertise: str, availability: int) -> list[Mentor]:
+    """Return filtered mentors."""
+    con, cur = db()
+    cur.execute(
+        """
+        SELECT User.ID, Username, Expertise, Availability, Picture
+        FROM Mentor
+        INNER JOIN User
+        WHERE Mentor.user_id = User.ID
+        AND Expertise = ?
+        AND Availability = ?
+        """,
+        [expertise, availability],
+    )
+    return [
+        Mentor(row.ID, row.Username, row.expertise, row.availability, row.Picture)
+        for row in cur.fetchall()
+    ]
+
+
+@reproca.method
 async def update_mentor(session: User, expertise: str, availability: int) -> bool:
     """Update mentor."""
     con, cur = db()

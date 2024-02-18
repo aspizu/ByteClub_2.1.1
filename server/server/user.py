@@ -1,9 +1,10 @@
 """User functionality."""
 from __future__ import annotations
 import re
+import msgspec
 
 # Don't put this in a TYPE_CHECKING block, else reproca fails.
-from reproca import Response  # noqa: TCH002
+from reproca import Response
 from . import User, reproca
 from .db import Row, db
 from .misc import seconds_since_1970
@@ -20,6 +21,12 @@ USERNAME_RE = re.compile(r"[a-zA-Z0-9\-_]{1,64}")
 EMAIL_RE = re.compile(
     r"^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
 )
+
+
+class Search(msgspec.Struct):
+    name: str
+    type: str
+    object_id: int
 
 
 def is_username_ok(username: str) -> bool:
@@ -142,3 +149,43 @@ async def unfollow_user(session: User, user_id: int) -> None:
 async def get_session(session: User | None) -> User | None:
     """Return session user."""
     return session
+
+
+@reproca.method
+async def search_all(query: str) -> list[Search]:
+    """Search for all users, blogs and startups"""
+    con, cur = db()
+    cur.execute(
+        """
+        SELECT ID,Username
+        FROM User
+        WHERE Username LIKE ?
+        """,
+        [f"%{query}%"],
+    )
+    list = []
+    for row in cur.fetchall():
+        list.append(Search(row.Username, "user", row.ID))
+    cur.execute(
+        """
+        SELECT ID,Title
+        FROM Blog
+        WHERE Title LIKE ?
+        """,
+        [f"%{query}%"],
+    )
+    for row in cur.fetchall():
+        list.append(Search(row.Title, "blog", row.ID))
+
+    cur.execute(
+        """
+        SELECT ID,Name
+        FROM Startup
+        WHERE Name LIKE ?
+        """,
+        [f"%{query}%"],
+    )
+    for row in cur.fetchall():
+        list.append(Search(row.Name, "startup", row.ID))
+
+    return list
