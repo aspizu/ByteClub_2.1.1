@@ -33,7 +33,7 @@ async def create_startup(
     con.commit()
     startup_id = cur.lastrowid
     cur.execute(
-        "INSERT INTO Founder (user_id, startup_id, createdat) VALUES (?, ?, ?)",
+        "INSERT INTO Founder (founder, startup, createdat) VALUES (?, ?, ?)",
         [session.id, startup_id, seconds_since_1970()],
     )
     con.commit()
@@ -45,13 +45,13 @@ async def add_founder(session: User, user_id: int, startup_id: int) -> bool:
     """Add founder to startup."""
     con, cur = db()
     cur.execute(
-        "SELECT ID FROM Founder WHERE User = ? AND Startup = ?",
+        "SELECT ID FROM Founder WHERE founder = ? AND Startup = ?",
         [session.id, startup_id],
     )
     if cur.fetchone() is None:
         return False
     cur.execute(
-        "INSERT INTO Founder (User, Startup, CreatedAt) VALUES (?, ?, ?)",
+        "INSERT INTO Founder (founder, Startup, CreatedAt) VALUES (?, ?, ?)",
         [user_id, startup_id, seconds_since_1970()],
     )
     con.commit()
@@ -106,7 +106,7 @@ async def update_startup(
         return True
     con, cur = db()
     cur.execute(
-        "SELECT ID FROM Founder WHERE Startup = ? AND User = ?",
+        "SELECT ID FROM Founder WHERE Startup = ? AND founder = ?",
         [startup_id, session.id],
     )
     if cur.fetchone() is None:
@@ -128,21 +128,6 @@ async def update_startup(
     query = query.rstrip(", ") + " WHERE ID = ?"
     params.append(startup_id)
     cur.execute(query, params)
-    con.commit()
-    return True
-
-
-@reproca.method
-async def delete_startup(startup_id: int, session: User) -> bool:
-    """Delete a startup."""
-    con, cur = db()
-    cur.execute(
-        "SELECT ID FROM Founder WHERE Startup = ? AND User = ?",
-        [startup_id, session.id],
-    )
-    if cur.fetchone() is None:
-        return False
-    cur.execute("DELETE FROM Startup WHERE ID = ?", [id])
     con.commit()
     return True
 
