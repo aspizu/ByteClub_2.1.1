@@ -17,6 +17,8 @@ export async function update_profile(bio:((string)|(null))):Promise<ReprocaMetho
 export async function follow_user(user_id:number):Promise<ReprocaMethodResponse<null>>{return await reproca.callMethod('/follow_user',{user_id})}
 /** Unfollow a user. */
 export async function unfollow_user(user_id:number):Promise<ReprocaMethodResponse<null>>{return await reproca.callMethod('/unfollow_user',{user_id})}
+/** Return session user. */
+export async function get_session():Promise<ReprocaMethodResponse<((User)|(null))>>{return await reproca.callMethod('/get_session',{})}
 /** Get Mentorship. */
 export async function get_mentorship(mentor_id:number):Promise<ReprocaMethodResponse<boolean>>{return await reproca.callMethod('/get_mentorship',{mentor_id})}
 /** Delete Mentorship. */
@@ -31,5 +33,7 @@ export async function update_mentor(expertise:string,availability:number):Promis
 export async function delete_mentor():Promise<ReprocaMethodResponse<null>>{return await reproca.callMethod('/delete_mentor',{})}
 /** Mentor structure. */
 export interface Mentor{user_id:number;username:string;expertise:string;availability:number;picture:string;}
+/** Reproca session store. */
+export interface User{id:number;username:string;created_at:number;}
 /** None */
 export interface Blog{id:number;title:string;content:string;author_id:number;author_username:string;author_picture:string;}

@@ -136,3 +136,9 @@ async def unfollow_user(session: User, user_id: int) -> None:
         [session.id, user_id],
     )
     con.commit()
+
+
+@reproca.method
+async def get_session(session: User|None) -> User|None:
+    """Return session user."""
+    return session
