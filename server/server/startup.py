@@ -27,7 +27,7 @@ class Startup(msgspec.Struct):
     picture: str | None
     created_at: int
     followers: list[tuple[str, str]]
-    founders: list[tuple[str, str]]
+    founders: list[Founder]
 
 
 @reproca.method
@@ -116,6 +116,16 @@ async def get_startup(startup_id: int) -> Startup | None:
         )
         for row in cur.fetchall()
     ]
+    cur.execute(
+        """
+        SELECT Username, Name
+        FROM User
+        INNER JOIN FollowStartup
+        WHERE Startup = ? AND User.ID = Follower
+        """,
+        [startup_id],
+    )
+    followers = [(row.Username, row.Name) for row in cur.fetchall()]
     return Startup(
         id=row.ID,
         name=row.Name,
@@ -125,6 +135,7 @@ async def get_startup(startup_id: int) -> Startup | None:
         picture=row.Path,
         created_at=row.CreatedAt,
         founders=founders,
+        followers=followers,
     )
 
 
@@ -246,6 +257,16 @@ async def get_founded_startups(user_id: int) -> list[Startup]:
             )
             for row in cur.fetchall()
         ]
+        cur.execute(
+            """
+            SELECT Username, Name
+            FROM User
+            INNER JOIN FollowStartup
+            WHERE Startup = ? AND User.ID = Follower
+            """,
+            [row.ID],
+        )
+        followers = [(row.Username, row.Name) for row in cur.fetchall()]
         startups.append(
             Startup(
                 id=row.ID,
@@ -256,6 +277,7 @@ async def get_founded_startups(user_id: int) -> list[Startup]:
                 picture=row.Path,
                 created_at=row.CreatedAt,
                 founders=founders,
+                followers=followers,
             )
         )
     return startups
