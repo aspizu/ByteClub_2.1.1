@@ -46,7 +46,10 @@ export class Reproca {
     }
 
     async logout(): Promise<Response> {
-        return await fetch(this.host + "/logout", {method: "POST"})
+        return await fetch(this.host + "/logout", {
+            method: "POST",
+            credentials: "include",
+        })
     }
 }
 
