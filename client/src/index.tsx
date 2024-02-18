@@ -9,6 +9,7 @@ import {PageNotFound} from "~/routes/PageNotFound"
 import {Register} from "~/routes/Register"
 import {Root} from "~/routes/Root"
 import {Login} from "./routes/Login"
+import {User} from "./routes/User"
 
 const router = createBrowserRouter([
     {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
     {
         path: "/register",
         element: <Register />,
+    },
+    {
+        path: "/user/:username",
+        element: <User />,
     },
     {
         path: "*",
