@@ -18,7 +18,9 @@ export function Login() {
         <div className="flex flex-col items-center justify-center h-full">
             <Card>
                 <CardBody className="gap-4 p-8 min-w-[20rem]">
-                    <span className="font-bold text-xl">Login to your account</span>
+                    <span className="font-bold text-xl mx-auto">
+                        Login to your account
+                    </span>
                     <Input
                         variant="bordered"
                         type="text"
