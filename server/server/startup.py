@@ -210,11 +210,15 @@ async def unfollow_startup(startup_id: int, session: User) -> bool:
 
 
 @reproca.method
-async def get_founded_startups(user_id: int) -> list[Startup]:
+async def get_founded_startups(username: str) -> list[Startup]:
     """Return startups founded by user."""
     startups = []
-
     _, cur = db()
+    cur.execute("SELECT ID FROM User WHERE Username = ?", [username])
+    row = cur.fetchone()
+    if row is None:
+        return []
+    user_id = row.ID
     cur.execute(
         """
         SELECT
@@ -237,8 +241,8 @@ async def get_founded_startups(user_id: int) -> list[Startup]:
         cur.execute(
             """
         SELECT
-        F.Username,
-        F.Name,
+        U.Username,
+        U.Name,
         Z.Path,
         F.CreatedAt
         FROM Founder AS F
@@ -252,7 +256,7 @@ async def get_founded_startups(user_id: int) -> list[Startup]:
             Founder(
                 username=row.Username,
                 name=row.Name,
-                picture=row.Picture,
+                picture=row.Path,
                 created_at=row.CreatedAt,
             )
             for row in cur.fetchall()
@@ -262,7 +266,7 @@ async def get_founded_startups(user_id: int) -> list[Startup]:
             SELECT Username, Name
             FROM User
             INNER JOIN FollowStartup
-            WHERE Startup = ? AND User.ID = Follower
+            WHERE Following = ? AND User.ID = Follower
             """,
             [row.ID],
         )
