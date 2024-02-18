@@ -21,6 +21,8 @@ export async function unfollow_user(user_id:number):Promise<ReprocaMethodRespons
 export async function get_session():Promise<ReprocaMethodResponse<((User)|(null))>>{return await reproca.callMethod('/get_session',{})}
 /** Search for all users, blogs and startups */
 export async function search_all(query:string):Promise<ReprocaMethodResponse<(Search)[]>>{return await reproca.callMethod('/search_all',{query})}
+/** Get a user. */
+export async function get_user(username:string):Promise<ReprocaMethodResponse<((UserDetails)|(null))>>{return await reproca.callMethod('/get_user',{username})}
 /** Get Mentorship. */
 export async function get_mentorship(mentor_id:number):Promise<ReprocaMethodResponse<boolean>>{return await reproca.callMethod('/get_mentorship',{mentor_id})}
 /** Delete Mentorship. */
@@ -48,13 +50,14 @@ export async function update_startup(startup_id:number,name:string,description:s
 /** Delete a startup. */
 export async function delete_startup(startup_id:number):Promise<ReprocaMethodResponse<boolean>>{return await reproca.callMethod('/delete_startup',{startup_id})}
 /** None */
-export interface Blog{id:number;title:string;content:string;author_id:number;author_username:string;author_picture:string;}
-/** None */
 export interface Search{name:string;type:string;object_id:number;}
-/** Startup structure. */
-export interface Startup{id:number;name:string;description:string;mission_statement:string;offerings:string;created_at:number;}
+/** Details from get user. */
+export interface UserDetails{id:number;link:((string)|(null));bio:((string)|(null));created_at:number;}
+/** None */
+export interface Blog{id:number;title:string;content:string;author_id:number;author_username:string;author_picture:string;}
 /** Reproca session store. */
 export interface User{id:number;username:string;created_at:number;}
 /** Mentor structure. */
 export interface Mentor{user_id:number;username:string;expertise:string;availability:number;picture:string;}
-/** Mentor structure. */
+/** Startup structure. */
+export interface Startup{id:number;name:string;description:string;mission_statement:string;offerings:string;created_at:number;}

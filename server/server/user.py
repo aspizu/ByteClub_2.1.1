@@ -189,3 +189,23 @@ async def search_all(query: str) -> list[Search]:
         list.append(Search(row.Name, "startup", row.ID))
 
     return list
+
+
+class UserDetails(msgspec.Struct):
+    """Details from get user."""
+
+    id: int
+    link: str | None
+    bio: str | None
+    created_at: int
+
+
+@reproca.method
+async def get_user(username: str) -> UserDetails | None:
+    """Get a user."""
+    _, cur = db()
+    cur.execute("SELECT * FROM User WHERE Username = ?", [username])
+    row: Row | None = cur.fetchone()
+    if row is None:
+        return None
+    return UserDetails(row.ID, row.Link, row.Bio, row.CreatedAt)
