@@ -49,11 +49,11 @@ export async function get_user(username:string):Promise<ReprocaMethodResponse<((
 export interface Search{type:'user'|'blog'|'startup';name:string;id:number;}
 /** Blog. */
 export interface Blog{id:number;title:string;content:string;author_username:string;author_name:string;author_picture:((string)|(null));}
-/** Reproca session store. */
-export interface User{id:number;username:string;created_at:number;}
-/** Blog from a known user. */
-export interface UserBlog{id:number;title:string;content:string;}
 /** Details from get user. */
 export interface GetUser{id:number;link:string;email:string;bio:string;experience:string;picture:((string)|(null));is_mentor:boolean;mentor_available:boolean;mentor_expertise:string;created_at:number;followers:([string,string])[];following:([string,string])[];}
+/** Blog from a known user. */
+export interface UserBlog{id:number;title:string;content:string;}
 /** Startup. */
 export interface Startup{id:number;name:string;description:string;mission_statement:string;offerings:string;created_at:number;}
+/** Reproca session store. */
+export interface User{id:number;username:string;created_at:number;}

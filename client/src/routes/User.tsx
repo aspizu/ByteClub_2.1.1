@@ -1,7 +1,7 @@
 import {Avatar, Card, CardBody, CircularProgress} from "@nextui-org/react"
 import {useParams} from "react-router-dom"
 import * as api from "~/api"
-import {Navbar} from "~/components/Navbar"
+import {Navbar} from "~/Components/Navbar"
 import {useMethod} from "~/reproca"
 
 function UserContent({
