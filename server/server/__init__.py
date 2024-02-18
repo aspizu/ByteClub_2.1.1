@@ -27,11 +27,17 @@ class User(msgspec.Struct):
 # --> User
 # Type used to store user sessions, any information can be stored together with the user
 # sessions.
-reproca: Reproca[int, User] = Reproca()
+reproca: Reproca[int, User] = Reproca(debug=True)
 
 # You should import all modules which create reproca methods here.
+<<<<<<< HEAD
 from . import blog, user, mentorship, mentor, startup  # noqa: E402
 _ = (user, blog, mentorship, mentor, startup)  
+=======
+from . import blog, mentor, mentorship, user  # noqa: E402
+
+_ = (user, blog, mentorship, mentor)
+>>>>>>> 18d6b8bfd318ddee7bc12556ef83d7191644159b
 
 # This will generate API bindings for Typescript inside the client src directory.
 with Path("../client/src/api.ts").open("w") as file:
@@ -44,7 +50,6 @@ async def spa_route(request: Request) -> FileResponse:
 
 
 app = reproca.build(
-    debug=True,
     routes=[
         Mount(
             "/assets", app=StaticFiles(directory="../client/dist/assets"), name="assets"
@@ -56,9 +61,12 @@ app = reproca.build(
             CORSMiddleware,
             allow_origins=[
                 "http://localhost:5173",  # Vite debug server, not for production.
+                "http://0.0.0.0:5173",
+                "http://127.0.0.1:5173",
             ],
             allow_methods=["*"],
             allow_headers=["*"],
+            allow_credentials=True,
         )
     ],
 )

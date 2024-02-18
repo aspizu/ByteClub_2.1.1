@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+
 class User:
     id: int
     name: str

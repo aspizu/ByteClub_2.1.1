@@ -2,6 +2,7 @@ import {NextUIProvider} from "@nextui-org/react"
 import "material-symbols"
 import {StrictMode} from "react"
 import {createRoot} from "react-dom/client"
+import {Toaster} from "react-hot-toast"
 import {RouterProvider, createBrowserRouter} from "react-router-dom"
 import "~/index.css"
 import {PageNotFound} from "~/routes/PageNotFound"
@@ -29,6 +30,7 @@ function Base() {
             <NextUIProvider>
                 <RouterProvider router={router} />
             </NextUIProvider>
+            <Toaster />
         </StrictMode>
     )
 }
