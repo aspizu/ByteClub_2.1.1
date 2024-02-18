@@ -1,33 +1,28 @@
 """Mentor related methods."""
 from __future__ import annotations
+from server.misc import seconds_since_1970
 from . import User, reproca
 from .db import db
 
 
 @reproca.method
-async def get_mentorship(mentor_id: int, session: User) -> bool:
+async def start_mentorship(session: User, mentee_id: int) -> bool:
     """Get Mentorship."""
     con, cur = db()
     cur.execute(
-        "SELECT * FROM Mentorship WHERE user_id = ? AND mentor_id = ?",
-        [session.id, mentor_id],
-    )
-    if cur.fetchone():
-        return False
-    cur.execute(
-        "INSERT INTO Mentorship (user_id, mentor_id) VALUES (?, ?)",
-        [session.id, mentor_id],
+        "INSERT INTO Mentorship (Mentor, Mentee, CreatedAt) VALUES (?, ?, ?)",
+        [session.id, mentee_id, seconds_since_1970()],
     )
     con.commit()
     return True
 
 
 @reproca.method
-async def delete_mentorship(mentor_id: int, session: User) -> None:
-    """Delete Mentorship."""
+async def stop_mentorship(session: User, mentee_id: int) -> None:
+    """Stop Mentorship."""
     con, cur = db()
     cur.execute(
-        "DELETE FROM Mentorship WHERE user_id = ? AND mentor_id = ?",
-        [session.id, mentor_id],
+        "UPDATE Mentorship SET EndedAt = ? WHERE Mentor = ? AND Mentee = ?",
+        [seconds_since_1970(), session.id, mentee_id],
     )
     con.commit()

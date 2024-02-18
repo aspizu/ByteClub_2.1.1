@@ -10,6 +10,7 @@ import {Register} from "~/routes/Register"
 import {Root} from "~/routes/Root"
 import Writeblog from "./CustomComponents/Writeblog"
 import {Login} from "./routes/Login"
+import {User} from "./routes/User"
 
 const router = createBrowserRouter([
     {
@@ -25,8 +26,15 @@ const router = createBrowserRouter([
         element: <Register />,
     },
     {
+
+        path: "/user/:username",
+        element: <User />,
+    },
+    {
+
         path: "/writeblog",
         element: <Writeblog />,
+
     },
     {
         path: "*",

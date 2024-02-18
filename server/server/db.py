@@ -1,7 +1,7 @@
 """Database utilities."""
 from __future__ import annotations
 import sqlite3
-from typing import Any, LiteralString
+from typing import Any
 
 
 class Row:
@@ -31,9 +31,3 @@ def db() -> tuple[sqlite3.Connection, sqlite3.Cursor]:
     con = sqlite3.connect("database.db")
     con.row_factory = Row
     return con, con.cursor()
-
-
-def get_last_insert_ID(cur: sqlite3.Cursor, table_name: LiteralString) -> int | None:  # noqa: N802
-    """Return the value from the ID column for the given table's last inserted row."""
-    cur.execute(f"SELECT ID FROM {table_name} WHERE rowid = last_insert_rowid()")  # noqa: S608
-    return (row := cur.fetchone()) and row.ID
