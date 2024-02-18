@@ -3,7 +3,7 @@ import {useSignal} from "@preact/signals-react"
 import {useRef} from "react"
 import toast from "react-hot-toast"
 import {useNavigate} from "react-router-dom"
-import BlogCard from "~/Components/BlogCard"
+import BlogCard from "~/components/BlogCard"
 import * as api from "~/api"
 import {fetchSession} from "~/globalState"
 
