@@ -22,7 +22,7 @@ export function Root() {
                 <ClientLink to="/write">
                     <Textarea
                         className="w-[40rem] mx-auto"
-                        placeholder="Whats on your thought..."
+                        placeholder="Whats on your mind..."
                     />
                 </ClientLink>
                 {blogs?.ok ? (
