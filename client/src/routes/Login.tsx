@@ -100,7 +100,6 @@ export function Login() {
                     </div>
                 </CardBody>
             </Card>
-
         </div>
     )
 }

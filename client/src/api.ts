@@ -21,8 +21,6 @@ export async function get_startup(startup_id:number):Promise<ReprocaMethodRespon
 export async function get_startups():Promise<ReprocaMethodResponse<(Startup)[]>>{return await reproca.callMethod('/get_startups',{})}
 /** Update startup. */
 export async function update_startup(startup_id:number,name:((string)|(null)),description:((string)|(null)),mission_statement:((string)|(null)),offerings:((string)|(null))):Promise<ReprocaMethodResponse<boolean>>{return await reproca.callMethod('/update_startup',{startup_id,name,description,mission_statement,offerings})}
-/** Delete a startup. */
-export async function delete_startup(startup_id:number):Promise<ReprocaMethodResponse<boolean>>{return await reproca.callMethod('/delete_startup',{startup_id})}
 /** Follow a startup. */
 export async function follow_startup(startup_id:number):Promise<ReprocaMethodResponse<boolean>>{return await reproca.callMethod('/follow_startup',{startup_id})}
 /** Unfollow a startup. */
@@ -48,7 +46,7 @@ export async function get_user(username:string):Promise<ReprocaMethodResponse<((
 /** Details from get user. */
 export interface GetUser{id:number;name:string;link:string;email:string;bio:string;experience:string;picture:((string)|(null));is_mentor:boolean;mentor_available:boolean;mentor_expertise:string;created_at:number;followers:([string,string])[];following:([string,string])[];}
 /** Blog. */
-export interface Blog{id:number;title:string;content:string;author_username:string;author_name:string;author_picture:((string)|(null));}
+export interface Blog{id:number;title:string;content:string;created_at:number;author_username:string;author_name:string;author_picture:((string)|(null));}
 /** Blog from a known user. */
 export interface UserBlog{id:number;title:string;content:string;created_at:number;}
 /** Startup. */

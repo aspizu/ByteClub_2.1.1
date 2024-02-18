@@ -40,6 +40,7 @@ class Blog(msgspec.Struct):
     id: int
     title: str
     content: str
+    created_at: int
     author_username: str
     author_name: str
     author_picture: str | None
@@ -55,6 +56,7 @@ async def get_blogs() -> list[Blog]:
             B.ID,
             B.Title,
             B.Content,
+            B.CreatedAt,
             U.Username,
             U.Name,
             F.Path
@@ -68,6 +70,7 @@ async def get_blogs() -> list[Blog]:
             id=row.ID,
             title=row.Title,
             content=row.Content,
+            created_at=row.CreatedAt,
             author_username=row.Username,
             author_name=row.Name,
             author_picture=row.Path,

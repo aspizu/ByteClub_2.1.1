@@ -1,4 +1,3 @@
-
 import {
     Avatar,
     Button,
@@ -28,7 +27,9 @@ export function Navbar() {
     return (
         <NextUINavbar>
             <NavbarBrand>
-                <p className="font-bold">BYTE CLUB</p>
+                <a href="/" className="font-bold">
+                    BYTE CLUB
+                </a>
             </NavbarBrand>
             <NavbarContent justify="center">
                 <NavbarItem>
