@@ -25,6 +25,7 @@ export class Reproca {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(params),
+                credentials: "include",
             })
         } catch (err) {
             if (err instanceof TypeError) {
@@ -45,7 +46,10 @@ export class Reproca {
     }
 
     async logout(): Promise<Response> {
-        return await fetch(this.host + "/logout", {method: "POST"})
+        return await fetch(this.host + "/logout", {
+            method: "POST",
+            credentials: "include",
+        })
     }
 }
 

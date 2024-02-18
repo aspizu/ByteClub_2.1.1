@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 import msgspec
-from server.misc import seconds_since_1970
 from . import User, reproca
 from .db import db, get_last_insert_ID
+from .misc import seconds_since_1970
 
 MAX_BLOG_TITLE_LENGTH = 256
 MAX_BLOG_CONTENT_LENGTH = 512

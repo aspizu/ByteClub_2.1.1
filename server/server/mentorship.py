@@ -9,7 +9,8 @@ async def get_mentorship(mentor_id: int, session: User) -> bool:
     """Get Mentorship."""
     con, cur = db()
     cur.execute(
-        "SELECT * FROM Mentorship WHERE user_id = ? AND mentor_id = ?", [session.id, mentor_id]
+        "SELECT * FROM Mentorship WHERE user_id = ? AND mentor_id = ?",
+        [session.id, mentor_id],
     )
     if cur.fetchone():
         return False
