@@ -1,9 +1,11 @@
-import {buttonVariants} from "~/Components/ui/button"
+import {buttonVariants} from "~/Components/ui/button";
 import {
     NavigationMenu,
     NavigationMenuItem,
     NavigationMenuList,
-} from "~/Components/ui/navigation-menu"
+} from "~/Components/ui/navigation-menu";
+
+
 
 interface RouteProps {
     href: string
@@ -22,13 +24,13 @@ const routeList: RouteProps[] = [
 ]
 
 export function Navbar() {
-    let backgroundColor = "white"
-    let iconColor: string = backgroundColor == "black" ? "white" : "black"
+    let backgroundColor = "black"
+    let iconColor: string = "white"
     return (
-        <header className="sticky border-b-[1px] top-0 z-40 w-full bg-white dark:border-b-slate-700 dark:bg-background">
+        <header className="sticky border-b-[1px] top-0 z-40 w-full bg-black dark:bg-background">
             <NavigationMenu className="mx-auto">
-                <NavigationMenuList className="container h-14 px-4 w-screen flex justify-between ">
-                    <NavigationMenuItem className="font-bold flex">
+                <NavigationMenuList className="container h-14 px-4 w-screen flex justify-between text-white">
+                    <NavigationMenuItem className="font-bold flex bg-black">
                         <svg
                             width="30"
                             height="32"
@@ -38,12 +40,12 @@ export function Navbar() {
                         >
                             <path
                                 d="M0 0V4.5911H30V0H0ZM0 13.6356V18.2267H30V13.6356H0ZM0 27.4089V32H30V27.4089H0Z"
-                                fill="black"
+                                fill={`${iconColor}`}
                             />
                         </svg>
                     </NavigationMenuItem>
 
-                    <NavigationMenuItem className="font-bold flex">
+                    <NavigationMenuItem className="font-bold flex bg-black">
                         <svg
                             width="42"
                             height="40"
@@ -85,7 +87,7 @@ export function Navbar() {
                         </span>
                     </NavigationMenuItem>
 
-                    <nav className="hidden md:flex gap-10">
+                    <nav className="hidden md:flex gap-10 bg-black">
                         {routeList.map((route: RouteProps, i) => (
                             <span
                                 key={i}
@@ -97,7 +99,7 @@ export function Navbar() {
                             </span>
                         ))}
                     </nav>
-                    <div className="hidden md:flex gap-2">
+                    <div className="hidden md:flex gap-2 bg-black">
                         <svg
                             width="32"
                             height="33"
@@ -107,7 +109,7 @@ export function Navbar() {
                         >
                             <path
                                 d="M0 0V23.5714L4 18.8571H8V4.71429H20V0H0ZM12 9.42857V28.2857H28L32 33V9.42857H12Z"
-                                fill={`black`}
+                                fill={`${iconColor}`}
                             />
                         </svg>
                     </div>
