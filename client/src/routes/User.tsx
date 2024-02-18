@@ -3,6 +3,7 @@ import {
     Button,
     Card,
     CardBody,
+    CardFooter,
     CardHeader,
     Chip,
     CircularProgress,
@@ -60,6 +61,7 @@ function UserContent({
     const isFollowing =
         !!session.value &&
         followers.map(([username, _]) => username).includes(session.value.username)
+    const isDashboard = session.value?.username === username
     async function followUser() {
         if (isFollowing) {
             toast(`You are no longer following ${name}`)
@@ -108,12 +110,20 @@ function UserContent({
                     )}
                     {email && <Chip>{email}</Chip>}
                 </div>
-                {bio && (
-                    <>
-                        <p className="font-bold">Bio</p>
-                        <p>{bio}</p>
-                    </>
-                )}
+                <div className="flex gap-4 items-center">
+                    <p className="font-bold">Bio</p>
+                    {isDashboard && (
+                        <Button
+                            className="material-symbols-rounded text-lg"
+                            isIconOnly
+                            size="sm"
+                            variant="flat"
+                        >
+                            edit
+                        </Button>
+                    )}
+                </div>
+                <p>{bio}</p>
                 {experience && (
                     <>
                         <p className="font-bold">Experience</p>
@@ -132,11 +142,67 @@ function UserContent({
     )
 }
 
+function formatFounderNames(names: string[]): string {
+    const totalCount = names.length
+    if (totalCount === 1) {
+        return `Founded by ${names[0]}`
+    } else if (totalCount === 2) {
+        return `Founded by ${names[0]} and ${names[1]}`
+    } else if (totalCount === 3) {
+        return `Founded by ${names[0]}, ${names[1]} and ${names[2]}`
+    } else {
+        const otherCount = totalCount - 2
+        return `Founded by ${names[0]}, ${names[1]} and ${otherCount} others`
+    }
+}
+
+function FoundedStartups({
+    username,
+    foundedStartups,
+}: {
+    username: string
+    foundedStartups: api.Startup[]
+}) {
+    return (
+        <div className="flex flex-col gap-4">
+            {foundedStartups.map((startup) => (
+                <Card key={startup.id}>
+                    <CardHeader className="gap-3">
+                        <p className="font-bold text-lg">{startup.name}</p>
+                        <p className="text-sm text-gray-400">
+                            {startup.mission_statement}
+                        </p>
+                    </CardHeader>
+                    <Divider />
+                    <CardFooter>
+                        <p>
+                            {formatFounderNames(
+                                startup.founders.map((founder) => founder.name)
+                            )}
+                        </p>
+                        <Button
+                            as="a"
+                            href={`/startup/${startup.id}`}
+                            className="ml-auto"
+                        >
+                            View
+                        </Button>
+                    </CardFooter>
+                </Card>
+            ))}
+        </div>
+    )
+}
+
 export function User() {
     const {username} = useParams()
     const [user, fetchUser] = useMethod(() => api.get_user(username!), [])
     const [userBlogs, fetchUserBlogs] = useMethod(
         () => api.get_user_blogs(username!),
+        []
+    )
+    const [foundedStartups, fetchFoundedStartups] = useMethod(
+        () => api.get_founded_startups(username!),
         []
     )
     if (user?.ok === null) {
@@ -146,7 +212,7 @@ export function User() {
         <div className="flex flex-col h-full">
             <Navbar />
             <div className="flex flex-col h-full w-[95vw] max-w-[1024px] mx-auto p-4 gap-5">
-                {user?.ok != null && userBlogs?.ok != null ? (
+                {user?.ok != null && userBlogs?.ok != null && foundedStartups?.ok ? (
                     <>
                         <UserContent
                             user={{...user.ok, username: username!}}
@@ -154,6 +220,11 @@ export function User() {
                         />
                         <p className="font-bold">Blogs</p>
                         <UserBlogs username={username!} userBlogs={userBlogs.ok} />
+                        <p className="font-bold">Startups</p>
+                        <FoundedStartups
+                            username={username!}
+                            foundedStartups={foundedStartups.ok}
+                        />
                     </>
                 ) : (
                     <CircularProgress className="m-auto" />

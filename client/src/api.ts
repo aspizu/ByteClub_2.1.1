@@ -16,15 +16,15 @@ export async function create_startup(name:string,description:string,mission_stat
 /** Add founder to startup. */
 export async function add_founder(user_id:number,startup_id:number):Promise<ReprocaMethodResponse<boolean>>{return await reproca.callMethod('/add_founder',{user_id,startup_id})}
 /** Return startup by id. */
-export async function get_startup(startup_id:number):Promise<ReprocaMethodResponse<Startup>>{return await reproca.callMethod('/get_startup',{startup_id})}
-/** Return all startups. */
-export async function get_startups():Promise<ReprocaMethodResponse<(Startup)[]>>{return await reproca.callMethod('/get_startups',{})}
+export async function get_startup(startup_id:number):Promise<ReprocaMethodResponse<((Startup)|(null))>>{return await reproca.callMethod('/get_startup',{startup_id})}
 /** Update startup. */
 export async function update_startup(startup_id:number,name:((string)|(null)),description:((string)|(null)),mission_statement:((string)|(null)),offerings:((string)|(null))):Promise<ReprocaMethodResponse<boolean>>{return await reproca.callMethod('/update_startup',{startup_id,name,description,mission_statement,offerings})}
 /** Follow a startup. */
 export async function follow_startup(startup_id:number):Promise<ReprocaMethodResponse<boolean>>{return await reproca.callMethod('/follow_startup',{startup_id})}
 /** Unfollow a startup. */
 export async function unfollow_startup(startup_id:number):Promise<ReprocaMethodResponse<boolean>>{return await reproca.callMethod('/unfollow_startup',{startup_id})}
+/** Return startups founded by user. */
+export async function get_founded_startups(username:string):Promise<ReprocaMethodResponse<(Startup)[]>>{return await reproca.callMethod('/get_founded_startups',{username})}
 /** Login to account. */
 export async function login(username:string,password:string):Promise<ReprocaMethodResponse<boolean>>{return await reproca.callMethod('/login',{username,password})}
 /** Register new user. */
@@ -43,15 +43,17 @@ export async function get_session():Promise<ReprocaMethodResponse<((User)|(null)
 export async function search_all(query:string):Promise<ReprocaMethodResponse<(Search)[]>>{return await reproca.callMethod('/search_all',{query})}
 /** Get a user. */
 export async function get_user(username:string):Promise<ReprocaMethodResponse<((GetUser)|(null))>>{return await reproca.callMethod('/get_user',{username})}
-/** Blog. */
-export interface Blog{id:number;title:string;content:string;created_at:number;author_username:string;author_name:string;author_picture:((string)|(null));}
-/** Startup. */
-export interface Startup{id:number;name:string;description:string;mission_statement:string;offerings:string;created_at:number;}
-/** Search results. */
-export interface Search{type:'user'|'blog'|'startup';name:string;id:number;}
-/** Details from get user. */
-export interface GetUser{id:number;name:string;link:string;email:string;bio:string;experience:string;picture:((string)|(null));is_mentor:boolean;mentor_available:boolean;mentor_expertise:string;created_at:number;followers:([string,string])[];following:([string,string])[];}
-/** Blog from a known user. */
-export interface UserBlog{id:number;title:string;content:string;created_at:number;}
 /** Reproca session store. */
 export interface User{id:number;username:string;created_at:number;}
+/** Blog from a known user. */
+export interface UserBlog{id:number;title:string;content:string;created_at:number;}
+/** Blog. */
+export interface Blog{id:number;title:string;content:string;created_at:number;author_username:string;author_name:string;author_picture:((string)|(null));}
+/** Details from get user. */
+export interface GetUser{id:number;name:string;link:string;email:string;bio:string;experience:string;picture:((string)|(null));is_mentor:boolean;mentor_available:boolean;mentor_expertise:string;created_at:number;followers:([string,string])[];following:([string,string])[];}
+/** Search results. */
+export interface Search{type:'user'|'blog'|'startup';name:string;id:number;}
+/** Startup. */
+export interface Startup{id:number;name:string;description:string;mission_statement:string;offering:string;picture:((string)|(null));created_at:number;followers:([string,string])[];founders:(Founder)[];}
+/** Startup founder. */
+export interface Founder{username:string;name:string;picture:((string)|(null));created_at:number;}
