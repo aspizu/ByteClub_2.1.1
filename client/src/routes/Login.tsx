@@ -35,8 +35,14 @@ export function Login() {
             toast.success("Logged-in successfully")
             navigate("/")
         } else {
-            console.error(response.err)
-            toast.error("An error occured")
+            if (response.err == undefined) {
+                toast.error("Incorrect password")
+                password.value = ""
+                passwordRef.current?.focus()
+            } else {
+                console.error(response.err)
+                toast.error("An error occured")
+            }
         }
     }
     return (
@@ -50,7 +56,7 @@ export function Login() {
                         ref={usernameRef}
                         variant="bordered"
                         type="text"
-                        label="Username"
+                        placeholder="Username"
                         value={username.value}
                         onValueChange={(value) => (username.value = value)}
                         isInvalid={!!usernameError}
@@ -60,7 +66,7 @@ export function Login() {
                         ref={passwordRef}
                         variant="bordered"
                         type={isVisible.value ? "text" : "password"}
-                        label="Password"
+                        placeholder="Password"
                         value={password.value}
                         onValueChange={(value) => (password.value = value)}
                         isInvalid={!!passwordError}
@@ -94,6 +100,7 @@ export function Login() {
                     </div>
                 </CardBody>
             </Card>
+
         </div>
     )
 }

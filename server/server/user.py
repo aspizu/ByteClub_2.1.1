@@ -228,6 +228,7 @@ class GetUser(msgspec.Struct):
     """Details from get user."""
 
     id: int
+    name: str
     link: str
     email: str
     bio: str
@@ -248,8 +249,8 @@ async def get_user(username: str) -> GetUser | None:
     cur.execute(
         """
         SELECT
-            User.ID, Link, Email, Bio, Experience, Path, IsMentor, MentorAvailable,
-            MentorExpertise, User.CreatedAt
+        User.ID, Name, Link, Email, Bio, Experience, Path, IsMentor,
+        MentorAvailable, MentorExpertise, User.CreatedAt
         FROM User
         LEFT JOIN File
         ON File.ID = User.Picture
@@ -281,16 +282,17 @@ async def get_user(username: str) -> GetUser | None:
     )
     following = [(row.Username, row.Name) for row in cur.fetchall()]
     return GetUser(
-        row.ID,
-        row.Link,
-        row.Email,
-        row.Bio,
-        row.Experience,
-        row.Path,
-        row.IsMentor,
-        row.MentorAvailable,
-        row.MentorExpertise,
-        row.CreatedAt,
-        followers,
-        following,
+        id=row.ID,
+        name=row.Name,
+        link=row.Link,
+        email=row.Email,
+        bio=row.Bio,
+        experience=row.Experience,
+        picture=row.Path,
+        is_mentor=row.IsMentor,
+        mentor_available=row.MentorAvailable,
+        mentor_expertise=row.MentorExpertise,
+        created_at=row.CreatedAt,
+        followers=followers,
+        following=following,
     )
