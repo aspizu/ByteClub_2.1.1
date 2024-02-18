@@ -1,4 +1,4 @@
-import {effect, signal} from "@preact/signals-react"
+import {signal} from "@preact/signals-react"
 import * as api from "~/api"
 
 export const session = signal<api.User | null>(null)
@@ -10,6 +10,4 @@ export async function fetchSession() {
     }
 }
 
-effect(() => {
-    fetchSession()
-})
+await fetchSession()
