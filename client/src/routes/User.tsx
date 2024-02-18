@@ -60,6 +60,7 @@ function UserContent({
     const isFollowing =
         !!session.value &&
         followers.map(([username, _]) => username).includes(session.value.username)
+    const isDashboard = session.value?.username === username
     async function followUser() {
         if (isFollowing) {
             toast(`You are no longer following ${name}`)
@@ -108,12 +109,20 @@ function UserContent({
                     )}
                     {email && <Chip>{email}</Chip>}
                 </div>
-                {bio && (
-                    <>
-                        <p className="font-bold">Bio</p>
-                        <p>{bio}</p>
-                    </>
-                )}
+                <div className="flex gap-4 items-center">
+                    <p className="font-bold">Bio</p>
+                    {isDashboard && (
+                        <Button
+                            className="material-symbols-rounded text-lg"
+                            isIconOnly
+                            size="sm"
+                            variant="flat"
+                        >
+                            edit
+                        </Button>
+                    )}
+                </div>
+                <p>{bio}</p>
                 {experience && (
                     <>
                         <p className="font-bold">Experience</p>
