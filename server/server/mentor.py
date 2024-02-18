@@ -1,7 +1,5 @@
 """Mentor related methods."""
 from __future__ import annotations
-from math import exp, pi
-
 import msgspec
 from . import User, reproca
 from .db import db
@@ -15,6 +13,7 @@ class Mentor(msgspec.Struct):
     expertise: str
     availability: int
     picture: str
+
 
 @reproca.method
 async def become_mentor(session: User, expertise: str, availability: int) -> bool:
@@ -34,7 +33,7 @@ async def become_mentor(session: User, expertise: str, availability: int) -> boo
 @reproca.method
 async def find_mentors() -> list[Mentor]:
     """Return all mentors."""
-    con, cur = db()
+    _, cur = db()
     cur.execute(
         """
         SELECT User.ID, Username, Expertise, Availability, Picture

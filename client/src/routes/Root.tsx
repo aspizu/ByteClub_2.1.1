@@ -1,13 +1,16 @@
 import {useEffect} from "react"
 import {useNavigate} from "react-router-dom"
-import {session} from "~/globalState"
+import {fetchSession, session} from "~/globalState"
 
 export function Root() {
     const navigate = useNavigate()
     useEffect(() => {
-        if (!session.value) {
-            navigate("/login")
-        }
+        ;(async () => {
+            await fetchSession()
+            if (session.value == null) {
+                navigate("/login")
+            }
+        })()
     }, [])
     return <h1>Hello, World!</h1>
 }

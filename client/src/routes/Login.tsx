@@ -1,9 +1,13 @@
 import {Button, Card, CardBody, Input, Link} from "@nextui-org/react"
 import {useSignal} from "@preact/signals-react"
 import {useRef} from "react"
+import toast from "react-hot-toast"
+import {useNavigate} from "react-router-dom"
 import * as api from "~/api"
+import {fetchSession} from "~/globalState"
 
 export function Login() {
+    const navigate = useNavigate()
     const usernameRef = useRef<HTMLInputElement>(null)
     const passwordRef = useRef<HTMLInputElement>(null)
     const username = useSignal("")
@@ -26,10 +30,13 @@ export function Login() {
             return passwordRef.current?.focus()
         }
         const response = await api.login(username.value, password.value)
+        await fetchSession()
         if (response.ok) {
-            console.log("Logged in")
+            toast.success("Logged-in successfully")
+            navigate("/")
         } else {
-            console.log("Error occured")
+            console.error(response.err)
+            toast.error("An error occured")
         }
     }
     return (
