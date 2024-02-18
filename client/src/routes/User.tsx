@@ -3,7 +3,6 @@ import {
     Button,
     Card,
     CardBody,
-    CardFooter,
     CardHeader,
     Chip,
     CircularProgress,
@@ -14,6 +13,7 @@ import toast from "react-hot-toast"
 import {useParams} from "react-router-dom"
 import * as api from "~/api"
 import {Navbar} from "~/components/Navbar"
+import {Startup} from "~/components/Startup"
 import {UserBlogs} from "~/components/UserBlogs"
 import {session} from "~/globalState"
 import {useMethod} from "~/reproca"
@@ -142,20 +142,6 @@ function UserContent({
     )
 }
 
-function formatFounderNames(names: string[]): string {
-    const totalCount = names.length
-    if (totalCount === 1) {
-        return `Founded by ${names[0]}`
-    } else if (totalCount === 2) {
-        return `Founded by ${names[0]} and ${names[1]}`
-    } else if (totalCount === 3) {
-        return `Founded by ${names[0]}, ${names[1]} and ${names[2]}`
-    } else {
-        const otherCount = totalCount - 2
-        return `Founded by ${names[0]}, ${names[1]} and ${otherCount} others`
-    }
-}
-
 function FoundedStartups({
     username,
     foundedStartups,
@@ -166,29 +152,7 @@ function FoundedStartups({
     return (
         <div className="flex flex-col gap-4">
             {foundedStartups.map((startup) => (
-                <Card key={startup.id}>
-                    <CardHeader className="gap-3">
-                        <p className="font-bold text-lg">{startup.name}</p>
-                        <p className="text-sm text-gray-400">
-                            {startup.mission_statement}
-                        </p>
-                    </CardHeader>
-                    <Divider />
-                    <CardFooter>
-                        <p>
-                            {formatFounderNames(
-                                startup.founders.map((founder) => founder.name)
-                            )}
-                        </p>
-                        <Button
-                            as="a"
-                            href={`/startup/${startup.id}`}
-                            className="ml-auto"
-                        >
-                            View
-                        </Button>
-                    </CardFooter>
-                </Card>
+                <Startup key={startup.id} startup={startup} />
             ))}
         </div>
     )
@@ -199,11 +163,11 @@ export function User() {
     const [user, fetchUser] = useMethod(() => api.get_user(username!), [])
     const [userBlogs, fetchUserBlogs] = useMethod(
         () => api.get_user_blogs(username!),
-        []
+        [],
     )
     const [foundedStartups, fetchFoundedStartups] = useMethod(
         () => api.get_founded_startups(username!),
-        []
+        [],
     )
     if (user?.ok === null) {
         return <PageNotFound />
