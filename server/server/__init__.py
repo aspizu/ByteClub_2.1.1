@@ -29,6 +29,11 @@ class User(msgspec.Struct):
 # sessions.
 reproca: Reproca[int, User] = Reproca()
 
+# You should import all modules which create reproca methods here.
+from . import blog, user  # noqa: E402
+
+_ = (user, blog)
+
 # This will generate API bindings for Typescript inside the client src directory.
 with Path("../client/src/api.ts").open("w") as file:
     reproca.typescript(file)

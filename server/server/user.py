@@ -1,7 +1,9 @@
 """User functionality."""
 from __future__ import annotations
 import re
-from typing import TYPE_CHECKING
+
+# Don't put this in a TYPE_CHECKING block, else reproca fails.
+from reproca import Response  # noqa: TCH002
 from . import User, reproca
 from .db import Row, db
 from .misc import seconds_since_1970
@@ -11,9 +13,6 @@ from .passwords import (
     is_password_ok,
     password_needs_rehash,
 )
-
-if TYPE_CHECKING:
-    from reproca import Response
 
 MAX_BIO_LENGTH = 256
 
