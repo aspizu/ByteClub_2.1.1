@@ -31,22 +31,10 @@ export async function follow_user(user_id:number):Promise<ReprocaMethodResponse<
 export async function unfollow_user(user_id:number):Promise<ReprocaMethodResponse<null>>{return await reproca.callMethod('/unfollow_user',{user_id})}
 /** Return session user. */
 export async function get_session():Promise<ReprocaMethodResponse<((User)|(null))>>{return await reproca.callMethod('/get_session',{})}
-export async function filter_mentors(expertise:string,availability:number):Promise<ReprocaMethodResponse<(Mentor)[]>>{return await reproca.callMethod('/filter_mentors',{expertise,availability})}
-/** Create new startup. Returns startup id. */
-export async function create_startup(name:string,description:string,mission_statement:string,offerings:string):Promise<ReprocaMethodResponse<boolean>>{return await reproca.callMethod('/create_startup',{name,description,mission_statement,offerings})}
-/** Add founder to startup. */
-export async function add_founder(user_id:number,startup_id:number):Promise<ReprocaMethodResponse<boolean>>{return await reproca.callMethod('/add_founder',{user_id,startup_id})}
-/** Return startup by id. */
-export async function get_startup(startup_id:number):Promise<ReprocaMethodResponse<Startup>>{return await reproca.callMethod('/get_startup',{startup_id})}
-/** Return all startups. */
-export async function get_startups():Promise<ReprocaMethodResponse<(Startup)[]>>{return await reproca.callMethod('/get_startups',{})}
-/** Update startup. */
-export async function update_startup(startup_id:number,name:string,description:string,mission_statement:string,offerings:string):Promise<ReprocaMethodResponse<boolean>>{return await reproca.callMethod('/update_startup',{startup_id,name,description,mission_statement,offerings})}
-/** Delete a startup. */
-export async function delete_startup(startup_id:number):Promise<ReprocaMethodResponse<boolean>>{return await reproca.callMethod('/delete_startup',{startup_id})}
 /** Reproca session store. */
+/**User Structure */
 export interface User{id:number;username:string;created_at:number;}
-/** None */
+/** Blog Structure */
 export interface Blog{id:number;title:string;content:string;author_id:number;author_username:string;author_picture:string;}
 /** Mentor structure. */
 export interface Mentor{user_id:number;username:string;expertise:string;availability:number;picture:string;}
