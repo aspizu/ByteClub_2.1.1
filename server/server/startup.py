@@ -16,6 +16,8 @@ class Startup(msgspec.Struct):
     mission_statement: str
     offerings: str
     created_at: int
+    followers: list[tuple[str, str]]
+    founders: list[tuple[str, str]]
 
 
 @reproca.method
@@ -59,11 +61,35 @@ async def add_founder(session: User, user_id: int, startup_id: int) -> bool:
 
 
 @reproca.method
-async def get_startup(startup_id: int) -> Startup:
+async def get_startup(startup_id: int) -> Startup|None:
     """Return startup by id."""
     _, cur = db()
     cur.execute("SELECT * FROM Startup WHERE ID = ?", [startup_id])
     row = cur.fetchone()
+    if row is None:
+        return None
+
+    cur.execute(
+        """
+        SELECT Username, Name
+        FROM User
+        INNER JOIN FollowStartup ON User.ID = FollowStartup.Follower
+        WHERE Following = ?
+        """,
+        [row.ID],
+    )
+    followers = [(row.Username, row.Name) for row in cur.fetchall()]
+    cur.execute(
+        """
+        SELECT Username, Name
+        FROM User
+        INNER JOIN Founder ON User.ID = Founder.Founder
+        WHERE Startup = ? 
+        """,
+        [row.ID],
+    )
+    founders = [(row.Username, row.Name) for row in cur.fetchall()]
+
     return Startup(
         row.ID,
         row.Name,
@@ -71,25 +97,57 @@ async def get_startup(startup_id: int) -> Startup:
         row.MissionStatement,
         row.Offering,
         row.CreatedAt,
+        followers=followers,
+        founders=founders,
     )
 
 
 @reproca.method
-async def get_startups() -> list[Startup]:
+async def get_all_startups() -> list[Startup]:
     """Return all startups."""
+    startups = []
+
     _, cur = db()
     cur.execute("SELECT * FROM Startup")
-    return [
-        Startup(
+    startup_rows = cur.fetchall()
+
+    for row in startup_rows:
+        cur.execute(
+            """
+            SELECT Username, Name
+            FROM User
+            INNER JOIN FollowStartup ON User.ID = FollowStartup.Follower
+            WHERE Following = ?
+            """,
+            [row.ID],
+        )
+        followers = [(follower_row.Username, follower_row.Name) for follower_row in cur.fetchall()]
+
+        cur.execute(
+            """
+            SELECT Username, Name
+            FROM User
+            INNER JOIN Founder ON User.ID = Founder.Founder
+            WHERE Startup = ? 
+            """,
+            [row.ID],
+        )
+        founders = [(founder_row.Username, founder_row.Name) for founder_row in cur.fetchall()]
+
+        startup = Startup(
             row.ID,
             row.Name,
             row.Description,
             row.MissionStatement,
             row.Offering,
             row.CreatedAt,
+            followers=followers,
+            founders=founders,
         )
-        for row in cur.fetchall()
-    ]
+
+        startups.append(startup)
+
+    return startups
 
 
 @reproca.method
@@ -163,21 +221,50 @@ async def unfollow_startup(startup_id: int, session: User) -> bool:
 
 
 @reproca.method
-async def get_founded_startups(session: User) -> list[Startup]:
+async def get_founded_startups(user_id:int) -> list[Startup]:
     """Return startups founded by user."""
+    startups = []
+
     _, cur = db()
-    cur.execute(
-        "SELECT * FROM Startup WHERE ID IN (SELECT Startup FROM Founder WHERE founder = ?)",
-        [session.id],
-    )
-    return [
-        Startup(
+    cur.execute("SELECT * FROM Startup where ID in (SELECT Startup from Founder where Founder = ?)", [user_id])
+    startup_rows = cur.fetchall()
+
+    for row in startup_rows:
+        cur.execute(
+            """
+            SELECT Username, Name
+            FROM User
+            INNER JOIN FollowStartup ON User.ID = FollowStartup.Follower
+            WHERE Following = ?
+            """,
+            [row.ID],
+        )
+        followers = [(follower_row.Username, follower_row.Name) for follower_row in cur.fetchall()]
+
+        cur.execute(
+            """
+            SELECT Username, Name
+            FROM User
+            INNER JOIN Founder ON User.ID = Founder.Founder
+            WHERE Startup = ? 
+            """,
+            [row.ID],
+        )
+        founders = [(founder_row.Username, founder_row.Name) for founder_row in cur.fetchall()]
+
+        startup = Startup(
             row.ID,
             row.Name,
             row.Description,
             row.MissionStatement,
             row.Offering,
             row.CreatedAt,
+            followers=followers,
+            founders=founders,
         )
-        for row in cur.fetchall()
-    ]
+
+        startups.append(startup)
+
+    return startups
+
+
