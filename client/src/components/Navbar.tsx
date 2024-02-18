@@ -1,5 +1,6 @@
 import {
     Avatar,
+    Button,
     Dropdown,
     DropdownItem,
     DropdownMenu,
@@ -41,7 +42,11 @@ export function Navbar() {
                 </NavbarItem>
             </NavbarContent>
             <NavbarContent justify="end">
-                {session.value && (
+                {session.value == null ? (
+                    <Button as="a" href="/login" variant="shadow" color="primary">
+                        Log in
+                    </Button>
+                ) : (
                     <Dropdown placement="bottom-end">
                         <DropdownTrigger>
                             <Avatar
