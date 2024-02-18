@@ -57,8 +57,18 @@ export function Navbar() {
                                     {session.value.username}
                                 </p>
                             </DropdownItem>
-                            <DropdownItem>View my profile</DropdownItem>
-                            <DropdownItem>Dashboard</DropdownItem>
+                            <DropdownItem
+                                as="a"
+                                href={`/user/${session.value.username}`}
+                            >
+                                View my profile
+                            </DropdownItem>
+                            <DropdownItem as="a" href="/messages">
+                                Messages
+                            </DropdownItem>
+                            <DropdownItem as="a" href="/dashboard">
+                                Dashboard
+                            </DropdownItem>
                             <DropdownItem
                                 key="logout"
                                 color="danger"
