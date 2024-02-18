@@ -1,12 +1,30 @@
 import {Button, Card, CardBody, Input, Link} from "@nextui-org/react"
 import {useSignal} from "@preact/signals-react"
+import {useRef} from "react"
 import * as api from "~/api"
 
 export function Login() {
+    const usernameRef = useRef<HTMLInputElement>(null)
+    const passwordRef = useRef<HTMLInputElement>(null)
     const username = useSignal("")
     const password = useSignal("")
     const isVisible = useSignal(false)
+    let usernameError: string | null = null
+    let passwordError: string | null = null
+    if (username.value.trim() && !/^[a-zA-Z0-9\-_]{1,64}$/.test(username.value)) {
+        usernameError =
+            "Username can only contain letters, numbers, dash or underscore."
+    }
+    if (password.value.trim() && password.value.length < 8) {
+        passwordError = "Password should be longer than 8 characters."
+    }
     async function onLoginClick() {
+        if (usernameError || !username.value.trim()) {
+            return usernameRef.current?.focus()
+        }
+        if (passwordError || !password.value.trim()) {
+            return passwordRef.current?.focus()
+        }
         const response = await api.login(username.value, password.value)
         if (response.ok) {
             console.log("Logged in")
@@ -17,21 +35,29 @@ export function Login() {
     return (
         <div className="flex flex-col items-center justify-center h-full">
             <Card>
-                <CardBody className="gap-4 p-8 min-w-[20rem]">
-                    <span className="font-bold text-xl">Login to your account</span>
+                <CardBody className="gap-4 p-8 w-[20rem]">
+                    <span className="font-bold text-xl mx-auto">
+                        Login to your account
+                    </span>
                     <Input
+                        ref={usernameRef}
                         variant="bordered"
                         type="text"
                         label="Username"
                         value={username.value}
                         onValueChange={(value) => (username.value = value)}
+                        isInvalid={!!usernameError}
+                        errorMessage={usernameError}
                     />
                     <Input
+                        ref={passwordRef}
                         variant="bordered"
                         type={isVisible.value ? "text" : "password"}
                         label="Password"
                         value={password.value}
                         onValueChange={(value) => (password.value = value)}
+                        isInvalid={!!passwordError}
+                        errorMessage={passwordError}
                         endContent={
                             <Button
                                 isIconOnly
