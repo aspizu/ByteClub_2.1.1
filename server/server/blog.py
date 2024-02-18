@@ -114,6 +114,7 @@ class UserBlog(msgspec.Struct):
     id: int
     title: str
     content: str
+    created_at: int
 
 
 @reproca.method
@@ -122,7 +123,7 @@ async def get_user_blogs(username: str) -> list[UserBlog]:
     _, cur = db()
     cur.execute(
         """
-        SELECT Blog.ID, Title, Content
+        SELECT Blog.ID, Title, Content, Blog.CreatedAt
         FROM Blog
         INNER JOIN User
         ON Blog.Author = User.ID AND User.Username = ?
@@ -134,6 +135,7 @@ async def get_user_blogs(username: str) -> list[UserBlog]:
             id=row.ID,
             title=row.Title,
             content=row.Content,
+            created_at=row.CreatedAt,
         )
         for row in cur.fetchall()
     ]
