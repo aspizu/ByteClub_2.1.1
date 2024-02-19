@@ -1,5 +1,5 @@
 import {CardContent, CircularProgress} from "@mui/material"
-import {Card, Input} from "@nextui-org/react"
+import {Avatar, Card, Input} from "@nextui-org/react"
 import {useSignal} from "@preact/signals-react"
 import {Link} from "react-router-dom"
 import * as api from "~/api"
@@ -37,11 +37,18 @@ export function Explore() {
                 />
                 {debounce.value !== null && <CircularProgress className="m-auto" />}
                 {results?.ok && results.ok.length > 0 && (
-                    <div className="flex flex-col gap-4">
+                    <div
+                        className="grid gap-4"
+                        style={{
+                            gridTemplateColumns:
+                                "repeat(auto-fill, minmax(min(10rem, 100%), 1fr))",
+                        }}
+                    >
                         {results.ok.map((result, i) => (
                             <Card key={i}>
                                 {result.type === "user" ? (
-                                    <CardContent>
+                                    <CardContent className="flex flex-col items-center justify-center gap-3">
+                                        <Avatar />
                                         <Link
                                             to={`/user/${result.name}`}
                                             className="font-bold"
@@ -50,7 +57,14 @@ export function Explore() {
                                         </Link>
                                     </CardContent>
                                 ) : result.type === "blog" ? (
-                                    <CardContent>
+                                    <CardContent className="flex flex-col items-center justify-center gap-3">
+                                        <Avatar
+                                            icon={
+                                                <span className="material-symbols-rounded">
+                                                    book
+                                                </span>
+                                            }
+                                        />
                                         <Link
                                             to={`/blog/${result.id}`}
                                             className="font-bold"
@@ -59,7 +73,14 @@ export function Explore() {
                                         </Link>
                                     </CardContent>
                                 ) : (
-                                    <CardContent>
+                                    <CardContent className="flex flex-col items-center justify-center gap-3">
+                                        <Avatar
+                                            icon={
+                                                <span className="material-symbols-rounded">
+                                                    corporate_fare
+                                                </span>
+                                            }
+                                        />
                                         <Link
                                             to={`/startup/${result.id}`}
                                             className="font-bold"
