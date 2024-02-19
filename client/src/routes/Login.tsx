@@ -3,6 +3,7 @@ import {useSignal} from "@preact/signals-react"
 import {useRef} from "react"
 import toast from "react-hot-toast"
 import {useNavigate} from "react-router-dom"
+import BlogCard from "~/components/BlogCard"
 import * as api from "~/api"
 import {fetchSession} from "~/globalState"
 
@@ -47,7 +48,7 @@ export function Login() {
     }
     return (
         <div className="flex flex-col items-center justify-center h-full">
-            <Card>
+            <Card  >
                 <CardBody className="gap-4 p-8 w-[20rem]">
                     <span className="font-bold text-xl mx-auto">
                         Login to your account
@@ -61,6 +62,7 @@ export function Login() {
                         onValueChange={(value) => (username.value = value)}
                         isInvalid={!!usernameError}
                         errorMessage={usernameError}
+                
                     />
                     <Input
                         ref={passwordRef}
