@@ -1,5 +1,6 @@
 import {
     Avatar,
+    Button,
     Card,
     CardBody,
     CardHeader,
@@ -23,15 +24,17 @@ export function Root() {
             <div className="flex flex-col h-full w-[95vw] max-w-[1024px] mx-auto p-4 gap-5">
                 <ClientLink to="/write">
                     <Textarea
-                        className="w-[40rem] mx-auto"
+                        variant="bordered"
+                        className="w-[40rem] mx-auto "
                         placeholder="Whats on your mind..."
                     />
                 </ClientLink>
+
                 {blogs?.ok && startups?.ok ? (
                     <>
                         <p className="font-bold">Blogs</p>
                         {blogs.ok.map((blog) => (
-                            <Card key={blog.id}>
+                            <Card key={blog.id} className="shadow-sm shadow-cyan-950">
                                 <CardHeader className="px-4 gap-2">
                                     <Link
                                         className="font-bold text-lg"
@@ -57,7 +60,14 @@ export function Root() {
                                 </CardBody>
                             </Card>
                         ))}
-                        <p className="font-bold">Startups</p>
+                        <div className="flex flex-row justify-between">
+                            <p className="font-bold">Startups</p>
+
+                            <ClientLink to="/createstartup">
+                                <Button color="primary">Register startup</Button>
+                            </ClientLink>
+                        </div>
+
                         {startups.ok.map((startup) => (
                             <Startup key={startup.id} startup={startup} />
                         ))}
