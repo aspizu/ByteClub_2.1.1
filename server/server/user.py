@@ -296,3 +296,37 @@ async def get_user(username: str) -> GetUser | None:
         followers=followers,
         following=following,
     )
+
+@reproca.method
+async def get_all_mentors() -> list[GetUser]:
+    """Get all mentors."""
+    _, cur = db()
+    cur.execute(
+        """
+        SELECT
+        User.ID, Name, Link, Email, Bio, Experience, Path, IsMentor,
+        MentorAvailable, MentorExpertise, User.CreatedAt
+        FROM User
+        LEFT JOIN File
+        ON File.ID = User.Picture
+        WHERE IsMentor = 1
+        """
+    )
+    return [
+        GetUser(
+            id=row.ID,
+            name=row.Name,
+            link=row.Link,
+            email=row.Email,
+            bio=row.Bio,
+            experience=row.Experience,
+            picture=row.Path,
+            is_mentor=row.IsMentor,
+            mentor_available=row.MentorAvailable,
+            mentor_expertise=row.MentorExpertise,
+            created_at=row.CreatedAt,
+            followers=[],
+            following=[],
+        )
+        for row in cur.fetchall()
+    ]
