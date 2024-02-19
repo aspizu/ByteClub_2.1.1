@@ -12,9 +12,11 @@ import timeago from "epoch-timeago"
 import {Link as ClientLink} from "react-router-dom"
 import * as api from "~/api"
 import {Navbar} from "~/components/Navbar"
+import {Startup} from "~/components/Startup"
 import {useMethod} from "~/reproca"
 export function Root() {
     const [blogs, fetchBlogs] = useMethod(api.get_blogs, [])
+    const [startups, fetchStartups] = useMethod(api.get_all_startups, [])
     return (
         <div>
             <Navbar />
@@ -25,7 +27,7 @@ export function Root() {
                         placeholder="Whats on your mind..."
                     />
                 </ClientLink>
-                {blogs?.ok ? (
+                {blogs?.ok && startups?.ok ? (
                     <>
                         <p className="font-bold">Blogs</p>
                         {blogs.ok.map((blog) => (
@@ -54,6 +56,10 @@ export function Root() {
                                     <p className="">{blog.content}</p>
                                 </CardBody>
                             </Card>
+                        ))}
+                        <p className="font-bold">Startups</p>
+                        {startups.ok.map((startup) => (
+                            <Startup key={startup.id} startup={startup} />
                         ))}
                     </>
                 ) : (

@@ -285,3 +285,73 @@ async def get_founded_startups(username: str) -> list[Startup]:
             )
         )
     return startups
+
+
+@reproca.method
+async def get_all_startups() -> list[Startup]:
+    """Return all startups."""
+    startups = []
+    _, cur = db()
+    cur.execute(
+        """
+        SELECT
+        S.ID,
+        S.Name,
+        S.Description,
+        S.MissionStatement,
+        S.Offering,
+        F.Path,
+        S.CreatedAt
+        FROM Startup AS S
+        LEFT JOIN File as F ON S.Picture = F.ID
+        """,
+    )
+    startups = []
+    for row in cur.fetchall():
+        cur.execute(
+            """
+        SELECT
+        U.Username,
+        U.Name,
+        Z.Path,
+        F.CreatedAt
+        FROM Founder AS F
+        INNER JOIN User as U ON U.ID = F.Founder
+        LEFT JOIN File as Z ON U.Picture = Z.ID
+        WHERE F.Startup = ?
+        """,
+            [row.ID],
+        )
+        founders = [
+            Founder(
+                username=row.Username,
+                name=row.Name,
+                picture=row.Path,
+                created_at=row.CreatedAt,
+            )
+            for row in cur.fetchall()
+        ]
+        cur.execute(
+            """
+            SELECT Username, Name
+            FROM User
+            INNER JOIN FollowStartup
+            WHERE Following = ? AND User.ID = Follower
+            """,
+            [row.ID],
+        )
+        followers = [(row.Username, row.Name) for row in cur.fetchall()]
+        startups.append(
+            Startup(
+                id=row.ID,
+                name=row.Name,
+                description=row.Description,
+                mission_statement=row.MissionStatement,
+                offering=row.Offering,
+                picture=row.Path,
+                created_at=row.CreatedAt,
+                founders=founders,
+                followers=followers,
+            )
+        )
+    return startups

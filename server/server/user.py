@@ -162,7 +162,7 @@ async def update_user(
         params.append(mentor_expertise)
 
     print(fields)
-    
+
     if fields:
         con, cur = db()
         update_query = f"UPDATE User SET {', '.join(fields)} WHERE ID = ?"  # noqa: S608
