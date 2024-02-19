@@ -14,7 +14,9 @@ import {Link as ClientLink} from "react-router-dom"
 import * as api from "~/api"
 import {Navbar} from "~/components/Navbar"
 import {Startup} from "~/components/Startup"
+import {session} from "~/globalState"
 import {useMethod} from "~/reproca"
+
 export function Root() {
     const [blogs, fetchBlogs] = useMethod(api.get_blogs, [])
     const [startups, fetchStartups] = useMethod(api.get_all_startups, [])
@@ -62,10 +64,11 @@ export function Root() {
                         ))}
                         <div className="flex flex-row justify-between">
                             <p className="font-bold">Startups</p>
-
-                            <ClientLink to="/createstartup">
-                                <Button color="primary">Register startup</Button>
-                            </ClientLink>
+                            {session.value && (
+                                <ClientLink to="/createstartup">
+                                    <Button color="primary">Register startup</Button>
+                                </ClientLink>
+                            )}
                         </div>
 
                         {startups.ok.map((startup) => (

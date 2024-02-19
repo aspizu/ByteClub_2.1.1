@@ -1,11 +1,11 @@
 import {Button, Input, Textarea} from "@nextui-org/react"
 import {useSignal} from "@preact/signals-react"
-import {useEffect, useRef} from "react"
+import {useRef} from "react"
 import toast from "react-hot-toast"
 import {useNavigate} from "react-router-dom"
 import * as api from "~/api"
 import {Navbar} from "~/components/Navbar"
-import {session} from "~/globalState"
+import {useLoggedInOnly} from "~/lib/utils"
 
 const MAX_BLOG_CONTENT_LENGTH = 1024
 
@@ -15,11 +15,7 @@ export function Write() {
     const content = useSignal("")
     const titleRef = useRef<HTMLInputElement>(null)
     const contentRef = useRef<HTMLTextAreaElement>(null)
-    useEffect(() => {
-        if (!session.value) {
-            navigate("/login")
-        }
-    }, [])
+    useLoggedInOnly()
     async function submit() {
         if (!title.value.trim()) {
             return titleRef.current?.focus()

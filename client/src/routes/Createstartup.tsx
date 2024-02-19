@@ -1,11 +1,10 @@
 import {Button, Input, Textarea} from "@nextui-org/react"
 import {useSignal} from "@preact/signals-react"
-import {useEffect} from "react"
 import toast from "react-hot-toast"
 import {useNavigate} from "react-router-dom"
 import * as api from "~/api"
 import {Navbar} from "~/components/Navbar"
-import {session} from "~/globalState"
+import {useLoggedInOnly} from "~/lib/utils"
 
 //name:string,description:string,mission_statement:string,offerings:string
 export function Createstartup() {
@@ -15,11 +14,7 @@ export function Createstartup() {
     const mission_statement = useSignal("")
     const offerings = useSignal("")
 
-    useEffect(() => {
-        if (!session.value) {
-            navigate("/login")
-        }
-    }, [])
+    useLoggedInOnly()
 
     async function submit() {
         if (

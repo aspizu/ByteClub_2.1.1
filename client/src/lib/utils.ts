@@ -1,6 +1,13 @@
-import {type ClassValue, clsx} from "clsx"
-import {twMerge} from "tailwind-merge"
+import {useEffect} from "react"
+import {useNavigate} from "react-router-dom"
+import {session} from "~/globalState"
 
-export function cn(...inputs: ClassValue[]) {
-    return twMerge(clsx(inputs))
+/** Fixes the issue where you cannot click back */
+export function useLoggedInOnly() {
+    const navigate = useNavigate()
+    useEffect(() => {
+        if (!session.value) {
+            navigate("/login", {replace: true})
+        }
+    }, [])
 }
