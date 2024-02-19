@@ -1,7 +1,6 @@
-import {CardContent} from "@mui/material"
+import {CardContent, CircularProgress} from "@mui/material"
 import {Card, Input} from "@nextui-org/react"
 import {useSignal} from "@preact/signals-react"
-import {useRef} from "react"
 import {Link} from "react-router-dom"
 import * as api from "~/api"
 import {Navbar} from "~/components/Navbar"
@@ -10,7 +9,7 @@ import {useMethod} from "~/reproca"
 export function Explore() {
     const query = useSignal("")
     const [results] = useMethod(() => api.search_all(query.value), [query.value])
-    const debounce = useRef<number | null>(null)
+    const debounce = useSignal<number | null>(null)
     query.subscribe((v) => {
         console.log(v)
     })
@@ -21,14 +20,22 @@ export function Explore() {
                 <Input
                     label="Search for entrepreneurs, mentors and startups..."
                     onValueChange={(value) => {
-                        if (debounce.current) {
-                            clearTimeout(debounce.current)
+                        if (debounce.value) {
+                            clearTimeout(debounce.value)
+                            debounce.value = null
                         }
-                        debounce.current = setTimeout(() => {
+                        debounce.value = setTimeout(() => {
                             query.value = value
+                            debounce.value = null
                         }, 500)
                     }}
+                    endContent={
+                        <span className="my-auto mr-1 material-symbols-rounded select-none">
+                            search
+                        </span>
+                    }
                 />
+                {debounce.value !== null && <CircularProgress className="m-auto" />}
                 {results?.ok && results.ok.length > 0 && (
                     <div className="flex flex-col gap-4">
                         {results.ok.map((result, i) => (
