@@ -163,11 +163,11 @@ export function User() {
     const [user, fetchUser] = useMethod(() => api.get_user(username!), [])
     const [userBlogs, fetchUserBlogs] = useMethod(
         () => api.get_user_blogs(username!),
-        [],
+        []
     )
     const [foundedStartups, fetchFoundedStartups] = useMethod(
         () => api.get_founded_startups(username!),
-        [],
+        []
     )
     if (user?.ok === null) {
         return <PageNotFound />

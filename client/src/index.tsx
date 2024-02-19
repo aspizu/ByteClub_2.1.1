@@ -12,6 +12,7 @@ import {Blog} from "./routes/Blog"
 import {Createstartup} from "./routes/Createstartup"
 import {Explore} from "./routes/Explore"
 import {Login} from "./routes/Login"
+import {Mentorship} from "./routes/Mentorship"
 import {Startup} from "./routes/Startup"
 import {User} from "./routes/User"
 import {Write} from "./routes/Write"
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
     {
         path: "/createstartup",
         element: <Createstartup />,
+    },
+    {
+        path: "/mentorship",
+        element: <Mentorship />,
     },
     {
         path: "*",
