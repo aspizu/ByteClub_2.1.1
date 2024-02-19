@@ -13,6 +13,7 @@ import toast from "react-hot-toast"
 import {useParams} from "react-router-dom"
 import * as api from "~/api"
 import {Navbar} from "~/components/Navbar"
+import {Startup} from "~/components/Startup"
 import {UserBlogs} from "~/components/UserBlogs"
 import {session} from "~/globalState"
 import {useMethod} from "~/reproca"
@@ -141,12 +142,32 @@ function UserContent({
     )
 }
 
+function FoundedStartups({
+    username,
+    foundedStartups,
+}: {
+    username: string
+    foundedStartups: api.Startup[]
+}) {
+    return (
+        <div className="flex flex-col gap-4">
+            {foundedStartups.map((startup) => (
+                <Startup key={startup.id} startup={startup} />
+            ))}
+        </div>
+    )
+}
+
 export function User() {
     const {username} = useParams()
     const [user, fetchUser] = useMethod(() => api.get_user(username!), [])
     const [userBlogs, fetchUserBlogs] = useMethod(
         () => api.get_user_blogs(username!),
-        []
+        [],
+    )
+    const [foundedStartups, fetchFoundedStartups] = useMethod(
+        () => api.get_founded_startups(username!),
+        [],
     )
     if (user?.ok === null) {
         return <PageNotFound />
@@ -155,7 +176,7 @@ export function User() {
         <div className="flex flex-col h-full">
             <Navbar />
             <div className="flex flex-col h-full w-[95vw] max-w-[1024px] mx-auto p-4 gap-5">
-                {user?.ok != null && userBlogs?.ok != null ? (
+                {user?.ok != null && userBlogs?.ok != null && foundedStartups?.ok ? (
                     <>
                         <UserContent
                             user={{...user.ok, username: username!}}
@@ -163,6 +184,11 @@ export function User() {
                         />
                         <p className="font-bold">Blogs</p>
                         <UserBlogs username={username!} userBlogs={userBlogs.ok} />
+                        <p className="font-bold">Startups</p>
+                        <FoundedStartups
+                            username={username!}
+                            foundedStartups={foundedStartups.ok}
+                        />
                     </>
                 ) : (
                     <CircularProgress className="m-auto" />

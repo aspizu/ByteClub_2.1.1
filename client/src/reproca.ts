@@ -15,7 +15,7 @@ export class Reproca {
 
     async callMethod(
         path: string,
-        params: object
+        params: object,
     ): Promise<ReprocaMethodResponse<any>> {
         let response: Response
         try {
@@ -65,7 +65,7 @@ export default function reproca(host_or_options: string | {host: string}): Repro
 export function useMethod<T>(
     method: () => Promise<ReprocaMethodResponse<T>>,
     deps?: DependencyList,
-    {reload}: {reload?: number} = {}
+    {reload}: {reload?: number} = {},
 ) {
     const [state, setState] = useState<ReprocaMethodResponse<T> | undefined>(undefined)
     function fetch() {
