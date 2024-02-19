@@ -62,7 +62,7 @@ export function Root() {
                                 </CardBody>
                             </Card>
                         ))}
-                        <div className="flex flex-row justify-between">
+                        <div className="flex flex-row justify-between items-center">
                             <p className="font-bold">Startups</p>
                             {session.value && (
                                 <ClientLink to="/createstartup">
@@ -70,10 +70,17 @@ export function Root() {
                                 </ClientLink>
                             )}
                         </div>
-
-                        {startups.ok.map((startup) => (
-                            <Startup key={startup.id} startup={startup} />
-                        ))}
+                        <div
+                            className="grid gap-4"
+                            style={{
+                                gridTemplateColumns:
+                                    "repeat(auto-fill, minmax(min(15rem, 100%), 1fr))",
+                            }}
+                        >
+                            {startups.ok.map((startup) => (
+                                <Startup key={startup.id} startup={startup} />
+                            ))}
+                        </div>
                     </>
                 ) : (
                     <CircularProgress className="m-auto" />

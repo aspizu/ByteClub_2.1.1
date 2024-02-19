@@ -24,13 +24,20 @@ export function Startup({startup}: {startup: api.Startup}) {
             </CardHeader>
             <Divider />
             <CardFooter>
-                <p>
+                <p className="text-gray-300 text-sm">
                     {formatFounderNames(
-                        startup.founders.map((founder) => founder.name),
+                        startup.founders.map((founder) => founder.name)
                     )}
                 </p>
-                <Button as="a" href={`/startup/${startup.id}`} className="ml-auto">
-                    View
+                <Button
+                    as="a"
+                    href={`/startup/${startup.id}`}
+                    color="secondary"
+                    size="sm"
+                    className="ml-auto"
+                    isIconOnly
+                >
+                    <span className="material-symbols-outlined">open_in_new</span>
                 </Button>
             </CardFooter>
         </Card>
